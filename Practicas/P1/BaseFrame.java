@@ -1,7 +1,7 @@
 /*
 * @author Guillermo Girón García
-* Clase que implementa la ventana base del software
-* de simulación de las prácticas de la asignatura
+* Clase que implementa la ventana base y de opciones
+* del software de simulación de las prácticas de la asignatura
 */
 
 import java.awt.Dimension;
@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 
 public class BaseFrame extends JFrame
 {
@@ -18,7 +19,7 @@ public class BaseFrame extends JFrame
     public BaseFrame()
     {   
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize((int) screenSize.getWidth() / 2, 
+        setSize((int) screenSize.getWidth() / 6, 
         (int) screenSize.getHeight() / 2);
         iniScreen();
         iniComponents();
@@ -41,7 +42,7 @@ public class BaseFrame extends JFrame
         setMinimumSize(new Dimension(300, 300));
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("Practices MC Simulation");
+        setTitle("Simulation parameters");
         setLocationRelativeTo(null);
     }
     
@@ -51,6 +52,8 @@ public class BaseFrame extends JFrame
         JPanel mainPanel = new JPanel();
         getContentPane().add(mainPanel);
 
+        //setLayout(null);
+    
         JLabel label1 = new JLabel("Testing");
         mainPanel.add(label1);
     }

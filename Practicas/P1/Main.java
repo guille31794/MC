@@ -9,6 +9,6 @@ public class Main
     public static void main(String[] args) 
     {
         BaseFrame bs = new BaseFrame();
-        
+        SimulationFrame sf= new SimulationFrame(bs);
     }
 }
