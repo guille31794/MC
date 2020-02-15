@@ -5,6 +5,7 @@
 */
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,9 +14,11 @@ import javax.swing.ImageIcon;
 
 public class SimulationFrame extends JFrame
 {
+    private Dimension screenSize;
+
     public SimulationFrame(BaseFrame bs)
     {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize((int) screenSize.getWidth() / 3, 
         (int) screenSize.getHeight() / 2);
         iniScreen(bs);
@@ -39,9 +42,13 @@ public class SimulationFrame extends JFrame
         JPanel mainPanel = new JPanel();
         getContentPane().add(mainPanel);
 
-        setLayout(null);
-    
-        //JLabel label1 = new JLabel("RubberDuck.png");
-        //mainPanel.add(label1);
+        //setLayout(null);
+        ImageIcon rubberduck = new ImageIcon("RubberDuck.jpg");
+        JLabel RubberDuck = new JLabel(new ImageIcon(
+            rubberduck.getImage().getScaledInstance(
+            (int)screenSize.getWidth() / 3, 
+            (int)screenSize.getHeight() / 2, 
+            Image.SCALE_SMOOTH)));
+        mainPanel.add(RubberDuck);
     }
 }

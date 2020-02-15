@@ -13,12 +13,14 @@ import javax.swing.ImageIcon;
 
 public class BaseFrame extends JFrame
 {
+    Dimension screenSize;
+    
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
     // Le aplica
     public BaseFrame()
     {   
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize((int) screenSize.getWidth() / 6, 
         (int) screenSize.getHeight() / 2);
         iniScreen();
@@ -54,7 +56,20 @@ public class BaseFrame extends JFrame
 
         //setLayout(null);
     
+        iniLabels(mainPanel);
+        iniButtons(mainPanel);
+    }
+
+    // Añade etiquetas a la ventana
+    private void iniLabels(JPanel mainPanel)
+    {
         JLabel label1 = new JLabel("Testing");
         mainPanel.add(label1);
+    }
+
+    // Añade botones a la ventana
+    private void iniButtons(JPanel mainPanel)
+    {
+
     }
 }
