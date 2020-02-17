@@ -9,17 +9,9 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JButton;
-import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.SwingConstants;
-import javax.swing.JMenuItem;
+import java.awt.Color;
+import java.awt.GridLayout;
+import javax.swing.*;
 
 public class BaseFrame extends JFrame
 {
@@ -27,9 +19,14 @@ public class BaseFrame extends JFrame
     JMenuItem menuItems[];
     JMenu menu[];
     JMenuBar menuBar;
-    JPanel mainPanel;
+    JPanel mainPanel[];
     JRadioButton[] buttons;
-    JRadioButtonMenuItem menuJbuttons;
+    ButtonGroup buttonGroup;
+    JTextField text;
+    JButton apply;
+    JLabel parameter, nMode, sfLabel;
+    JToggleButton nightMode;
+    SimulationFrame sf;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -39,6 +36,7 @@ public class BaseFrame extends JFrame
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize((int) screenSize.getWidth() / 6, 
         (int) screenSize.getHeight() / 2);
+        sf = new SimulationFrame();
         iniScreen();
         iniComponents();
     }
@@ -50,8 +48,9 @@ public class BaseFrame extends JFrame
         else
             setSize(width, height);
 
-        iniComponents();
+        sf = new SimulationFrame();
         iniScreen();
+        iniComponents();    
     }
 
     // Inicializa los parámetros de la ventana
@@ -61,40 +60,145 @@ public class BaseFrame extends JFrame
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Simulation parameters");
-        setLocationRelativeTo(null);
+        setLocation(sf.getX() + sf.getWidth(), sf.getY());
+        setLayout(new GridLayout(3,1));
     }
     
     // Añade componentes a la ventana principal
     private void iniComponents()
-    {
-        mainPanel = new JPanel();
-        getContentPane().add(mainPanel);
-
-        //setLayout(null);
-    
-        //iniLabels();
-        //iniButtons();
+    {   
+        iniPanels();
+        iniLabels();
+        iniTexts();
+        iniButtons();
         iniMenu();
-        //iniJButtons();
+        iniJButtons();
+        iniToogleButtons();
+    }
+
+    // Añade paneles a la ventana
+    private void iniPanels()
+    {
+        mainPanel = new JPanel[4];
+
+        mainPanel[0] = new JPanel();
+        getContentPane().add(mainPanel[0]);
+        mainPanel[1] = new JPanel();
+        getContentPane().add(mainPanel[1]);
+        mainPanel[2] = new JPanel(new GridLayout(3,2));
+        getContentPane().add(mainPanel[2]);
+
+        mainPanel[3] = new JPanel();
+        sf.getContentPane().add(mainPanel[3]);
+
+        // setLayout(null);
+        /*ImageIcon rubberduck = new ImageIcon("RubberDuck.jpg");
+        JLabel RubberDuck = new JLabel(new ImageIcon(rubberduck.getImage().getScaledInstance(
+                (int) screenSize.getWidth() / 3, (int) screenSize.getHeight() / 2, Image.SCALE_SMOOTH)));
+        mainPanel[3].add(RubberDuck);*/
     }
 
     // Añade etiquetas a la ventana
     private void iniLabels()
     {
-        JLabel label1 = new JLabel("Testing");
-        mainPanel.add(label1);
+        parameter = new JLabel("Parameter:", SwingConstants.RIGHT);
+        mainPanel[0].add(parameter);
+        nMode = new JLabel("Night Mode:", SwingConstants.CENTER);
+        mainPanel[1].add(nMode);
+        sfLabel = new JLabel("Hi!");
+        mainPanel[3].add(sfLabel);
+    }
+
+    // Añade textos a la ventana
+    private void iniTexts()
+    {
+        text = new JTextField("Write here...");
+        mainPanel[0].add(text);
     }
 
     // Añade botones a la ventana
     private void iniButtons()
     {
-        
+        apply = new JButton("Apply");
+        mainPanel[0].add(apply);
+
+        ActionListener apply_ = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                sfLabel.setText("Parameter " + text.getText() + " applied");
+            }
+        };
+
+        apply.addActionListener(apply_);
     }
 
     // Añade Jbuttons
     private void iniJButtons()
     {
+        buttons = new JRadioButton[2];
+        buttons[0] = new JRadioButton("Hello!", true);
+        buttons[1] = new JRadioButton("Bye!", false);
 
+        mainPanel[2].add(buttons[0]);
+        mainPanel[2].add(buttons[1]);
+
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(buttons[0]);
+        buttonGroup.add(buttons[1]);
+
+        ActionListener greet = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                sfLabel.setText("Hi! How are you?");
+            }
+        };
+
+        ActionListener salut = new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae) 
+            {
+                sfLabel.setText("Bye, bye friend!");
+            }
+        };
+
+        buttons[0].addActionListener(greet);
+        buttons[1].addActionListener(salut);
+    }
+
+    // Añade botones On/Off
+    private void iniToogleButtons()
+    {
+        nightMode = new JToggleButton("On");
+        mainPanel[1].add(nightMode);
+
+        ActionListener on_off = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                if(nightMode.getText() == "On")
+                {
+                    mainPanel[0].setBackground(Color.DARK_GRAY);
+                    mainPanel[1].setBackground(Color.DARK_GRAY);
+                    mainPanel[2].setBackground(Color.DARK_GRAY);
+                    nightMode.setText("Off");
+                }
+                else
+                {
+                    mainPanel[0].setBackground(Color.WHITE);
+                    mainPanel[1].setBackground(Color.WHITE);
+                    mainPanel[2].setBackground(Color.WHITE);
+                    nightMode.setText("On");
+                }
+            }
+        };
+
+        nightMode.addActionListener(on_off);
     }
 
     // Añade Menu

@@ -16,39 +16,23 @@ public class SimulationFrame extends JFrame
 {
     private Dimension screenSize;
 
-    public SimulationFrame(BaseFrame bs)
+    public SimulationFrame()
     {
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize((int) screenSize.getWidth() / 3, 
         (int) screenSize.getHeight() / 2);
-        iniScreen(bs);
-        iniComponents(); 
+        iniScreen();
     }
 
     // Inicializa los parámetros de la ventana
     // La coloca a la derecha de la ventana de parametros
-     private void iniScreen(BaseFrame bs)
+     private void iniScreen()
      {
          setMinimumSize(new Dimension(300, 300));
          setVisible(true);
          setDefaultCloseOperation(EXIT_ON_CLOSE);
          setTitle("Simulation screen");
-         setLocation(bs.getX()+bs.getWidth(), bs.getY());
+         //setLocation(bs.getX()+bs.getWidth(), bs.getY());
+         setLocationRelativeTo(null);
      }
-
-    // Añade componentes a la ventana principal
-    private void iniComponents()
-    {
-        JPanel mainPanel = new JPanel();
-        getContentPane().add(mainPanel);
-
-        //setLayout(null);
-        ImageIcon rubberduck = new ImageIcon("RubberDuck.jpg");
-        JLabel RubberDuck = new JLabel(new ImageIcon(
-            rubberduck.getImage().getScaledInstance(
-            (int)screenSize.getWidth() / 3, 
-            (int)screenSize.getHeight() / 2, 
-            Image.SCALE_SMOOTH)));
-        mainPanel.add(RubberDuck);
-    }
 }
