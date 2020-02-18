@@ -34,11 +34,13 @@ public class BaseFrame extends JFrame
     public BaseFrame()
     {   
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        
         setSize((int) screenSize.getWidth() / 6, 
         (int) screenSize.getHeight() / 2);
         sf = new SimulationFrame();
-        iniScreen();
+        
         iniComponents();
+        iniScreen();
     }
 
     public BaseFrame(int height, int width)
