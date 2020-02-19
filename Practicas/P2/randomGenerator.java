@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /*
@@ -9,13 +10,13 @@ import java.util.ArrayList;
 
 public class randomGenerator
 {
-    private ArrayList<BigInteger> generated;
+    private ArrayList<Double> generated;
     private BigInteger n, // Integers to generate
-    p; // Period
+    p; // Period 
 
     public randomGenerator(String s, int o) throws Exception
     {
-        generated = new ArrayList<BigInteger>();
+        generated = new ArrayList<Double>();
         n = new BigInteger(s);
         
         switch(o)
@@ -43,29 +44,31 @@ public class randomGenerator
 
     public void lcg261a()
     {
-        BigInteger a, // Multiplier
+        int a, // Multiplier
         m, // Modulus
         x,
-        prev_X; // Seed
-        final int k = 25; // Maximum supported 28
+        prev_X, // Seed
+        startPoint;
+        final int k = 5; // Maximum supported 28
 
-        m = BigInteger.valueOf(2L);
-        m = m.pow(k);
-        a = BigInteger.valueOf(13L); // 8 * i + 3 (i = 1) General form: (8 * i + o - 3)
-        prev_X = BigInteger.ONE; // 1
-        p = BigInteger.ZERO;
+        m = 2;
+        m = (int)Math.pow(m, k);
+        a = 5; // 8 * i - 3 (i = 1) General form: (8 * i + o - 3)
+        prev_X = 1; 
+        p = 0;
 
-        x = a.multiply(prev_X).mod(m);
-        generated.add(x);
+        x = (a * prev_X) % m;
+        startPoint = x;
+        generated.add(Double(x / m));
         prev_X = x;
 
         do
         {
-            x = a.multiply(prev_X).mod(m);
-            generated.add(x);
+            x = (a * prev_X) % m;
+            generated.add(Double(x / m));
             prev_X = x;
-            p = p.add(BigInteger.ONE);
-        }while(!x.equals(generated.get(0)) && !p.equals(n));
+            ++p;
+        }while(x != startPoint && p != n);
     }
 
     public void lcg261b()
@@ -73,7 +76,8 @@ public class randomGenerator
         BigInteger a, // Multiplier
                 m, // Modulus
                 x, 
-                prev_X; // Seed
+                prev_X, // Seed
+                startPoint;
         final int k = 25; // Maximum supported 28
 
         m = BigInteger.valueOf(2L);
@@ -83,16 +87,17 @@ public class randomGenerator
         p = BigInteger.ZERO;
 
         x = a.multiply(prev_X).mod(m);
-        generated.add(x);
+        startPoint = x;
+        generated.add(BigDecimal(x).divide(BigDecimal(m)).doubleValue());
         prev_X = x;
 
         do 
         {
             x = a.multiply(prev_X).mod(m);
-            generated.add(x);
+            generated.add(BigDecimal(x).divide(BigDecimal(m)).doubleValue());
             prev_X = x;
             p = p.add(BigInteger.ONE);
-        } while (!x.equals(generated.get(0)) && !p.equals(n));
+        } while (!x.equals(startPoint) && !p.equals(n));
     }
 
     public void lcg262()
@@ -100,7 +105,8 @@ public class randomGenerator
         BigInteger a, // Multiplier
                 m, // Modulus
                 x, 
-                prev_X; // Seed
+                prev_X, // Seed
+                starPoint;
 
         m = BigInteger.valueOf(31L);
         a = BigInteger.valueOf(3L); // != 8 * i + 3 (i = 15) General form != (8 * i + o - 3)
@@ -108,21 +114,44 @@ public class randomGenerator
         p = BigInteger.ZERO;
 
         x = a.multiply(prev_X).mod(m);
-        generated.add(x);
+        starPoint = x;
+        generated.add(BigDecimal(x).divide(BigDecimal(m)).doubleValue());
         prev_X = x;
 
         do 
         {
             x = a.multiply(prev_X).mod(m);
-            generated.add(x);
+            generated.add(BigDecimal(x).divide(BigDecimal(m)).doubleValue());
             prev_X = x;
             p = p.add(BigInteger.ONE);
-        } while (!x.equals(generated.get(0)) && !p.equals(n));
+        } while (!x.equals(starPoint) && !p.equals(n));
     }
 
     public void lcg263()
     {
+        BigInteger a, // Multiplier
+                m, // Modulus
+                x, 
+                prev_X, // Seed
+                startPoint;
+        
+        m = BigInteger.valueOf(Integer.MAX_VALUE);
+        a = BigInteger.valueOf(16807L);
+        prev_X = BigInteger.ONE;
+        p = BigInteger.ZERO;
 
+        x = a.multiply(prev_X).mod(m);
+        startPoint = x;
+        generated.add(BigDecimal(x).divide(BigDecimal(m)).doubleValue());
+        prev_X = x;
+
+        do 
+        {
+            x = a.multiply(prev_X).mod(m);
+            generated.add(BigDecimal(x).divide(BigDecimal(m)).doubleValue());
+            prev_X = x;
+            p = p.add(BigInteger.ONE);
+        } while (!x.equals(startPoint) && !p.equals(n));
     }
 
     public void combinedGenerator()
@@ -157,7 +186,9 @@ public class randomGenerator
 
     public static void main(String[] args) throws Exception
     {
-        randomGenerator r = new randomGenerator("100000000", 2);
-        System.out.println(r.getPeriod());
+        //randomGenerator r = new randomGenerator("100000000", 1);
+        
+        //System.out.println(r.getPeriod());
+        System.out.println(d);
     }
 }
