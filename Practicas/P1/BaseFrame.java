@@ -114,7 +114,8 @@ public class BaseFrame extends JFrame
     // Añade textos a la ventana
     private void iniTexts()
     {
-        text = new JTextField("Write here...");
+        text = new JTextField("     ");
+        text.setSize(60, 20);
         mainPanel[0].add(text);
     }
 
