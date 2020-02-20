@@ -16,6 +16,11 @@ import javax.swing.*;
 
 public class BaseFrame extends JFrame
 {
+    /**
+     * Atributo relativo a la serialización de la clase
+     * insertado automáticamente por el editor
+     */
+    private static final long serialVersionUID = 1L;
     private Dimension screenSize;
     private JMenuItem menuItems[];
     private JMenu menu[];
@@ -25,8 +30,8 @@ public class BaseFrame extends JFrame
     private JTextField text;
     private JButton exec;
     private JLabel parameter, nMode, sfLabel;
-    private JComboBox generatorMenu;
-    private SimulationFrame sf;
+    private JComboBox<String> generatorMenu;
+    private final SimulationFrame sf;
     private randomGenerator rg;
     private int toGenerate, option;
 
@@ -45,7 +50,7 @@ public class BaseFrame extends JFrame
         iniScreen();
     }
 
-    public BaseFrame(int height, int width)
+    public BaseFrame(final int height, final int width)
     {
         if(width < 300 || height < 300)
             setSize(300, 300);
@@ -85,6 +90,7 @@ public class BaseFrame extends JFrame
         mainPanel = new JPanel[4];
 
         mainPanel[0] = new JPanel();
+        mainPanel[0].setLayout(null);
         getContentPane().add(mainPanel[0]);
         mainPanel[1] = new JPanel();
         getContentPane().add(mainPanel[1]);
@@ -99,16 +105,15 @@ public class BaseFrame extends JFrame
     private void iniLabels()
     {
         parameter = new JLabel("Numbers to generate:", SwingConstants.RIGHT);
+        parameter.setBounds(50, 25, 175, 30);
         mainPanel[0].add(parameter);
-        nMode = new JLabel("Night Mode:", SwingConstants.CENTER);
-        mainPanel[1].add(nMode);
     }
 
     // Añade textos a la ventana
     private void iniTexts()
     {
-        text = new JTextField("  ");
-        text.setSize(60, 20);
+        text = new JTextField();
+        text.setBounds(100, 50, 100, 30);
         mainPanel[0].add(text);
     }
 
@@ -118,14 +123,17 @@ public class BaseFrame extends JFrame
         exec = new JButton("Apply");
         mainPanel[2].add(exec);
 
-        ActionListener exec_ = new ActionListener()
+        final ActionListener exec_ = new ActionListener()
         {
             @Override
-            public void actionPerformed(ActionEvent ae)
+            public void actionPerformed(final ActionEvent ae)
             {
                 toGenerate = Integer.parseInt(text.getText());
                 option = generatorMenu.getSelectedIndex();
-                rg = new randomGenerator(toGenerate, option);
+                try
+                {
+                    rg = new randomGenerator(toGenerate, option);
+                }catch(final Exception exception){}
             }
         };
 
@@ -135,10 +143,10 @@ public class BaseFrame extends JFrame
     // Añade menu para seleccionar los generadores de numeros
     private void iniCombobox()
     {
-        String[] gMenu = {"lcg 26.1a", "lcg 26.1b",
+        final String[] gMenu = {"lcg 26.1a", "lcg 26.1b",
         "lcg 26.2", "lcg 26.3", "Combined generator",
         "Fishman", "Moore", "RANDU"};
-        generatorMenu = new JComboBox(gMenu);
+        generatorMenu = new JComboBox<String>(gMenu);
         mainPanel[1].add(generatorMenu, SwingConstants.CENTER);
     }
 
@@ -156,31 +164,31 @@ public class BaseFrame extends JFrame
         menuItems[0] = new JMenuItem("Exit");
         menuItems[1] = new JMenuItem("Help");
         
-        ActionListener exit = new ActionListener()
+        final ActionListener exit = new ActionListener()
         {
             @Override
-            public void actionPerformed(ActionEvent ae)
+            public void actionPerformed(final ActionEvent ae)
             {
                 System.exit(0);
             }
         };
 
-        ActionListener help = new ActionListener()
+        final ActionListener help = new ActionListener()
         {
             @Override
-            public void actionPerformed(ActionEvent ae)
+            public void actionPerformed(final ActionEvent ae)
             {
-                JFrame helpWindow = new JFrame("Help");
+                final JFrame helpWindow = new JFrame("Help");
                 helpWindow.setSize(300, 300);
                 helpWindow.setVisible(true);
                 helpWindow.setLocationRelativeTo(null);
                 helpWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
                 helpWindow.setLayout(new BorderLayout());
-                JPanel helpPanel = new JPanel(new BorderLayout());
+                final JPanel helpPanel = new JPanel(new BorderLayout());
                 helpWindow.getContentPane().add(helpPanel);
-                JLabel devLabel = new JLabel("Developed by Guillermo Girón García", SwingConstants.CENTER);
-                JLabel versionLabel = new JLabel("version 1.0", SwingConstants.CENTER);
-                JLabel siteLabel = new JLabel("http://github.com/guille31794/MC", SwingConstants.CENTER);
+                final JLabel devLabel = new JLabel("Developed by Guillermo Girón García", SwingConstants.CENTER);
+                final JLabel versionLabel = new JLabel("version 1.0", SwingConstants.CENTER);
+                final JLabel siteLabel = new JLabel("http://github.com/guille31794/MC", SwingConstants.CENTER);
                 helpPanel.add(devLabel, BorderLayout.NORTH);
                 helpPanel.add(versionLabel, BorderLayout.SOUTH);
                 helpPanel.add(siteLabel, BorderLayout.CENTER);
