@@ -11,12 +11,12 @@ import java.util.ArrayList;
 public class randomGenerator
 {
     private ArrayList<Double> generated;
-    private int n, // Integers to generate
-    p; // Period 
+    private long n, // Integers to generate
+    p; // Generated counter 
 
-    public randomGenerator(int n_, int o) throws Exception
+    public randomGenerator(long n_, int o) throws Exception
     {
-        generated = new ArrayList<Double>(n_);
+        generated = new ArrayList<Double>();
         n = n_;
         
         switch(o)
@@ -47,8 +47,7 @@ public class randomGenerator
         int a, // Multiplier
         m, // Modulus
         x,
-        prev_X, // Seed
-        startPoint;
+        prev_X; // Seed
         final int k = 5; // Maximum supported 28
 
         m = 2;
@@ -57,18 +56,13 @@ public class randomGenerator
         prev_X = 1; 
         p = 0;
 
-        x = (a * prev_X) % m;
-        startPoint = x;
-        generated.add(Double(x / m));
-        prev_X = x;
-
         do
         {
             x = (a * prev_X) % m;
-            generated.add(Double(x / m));
+            generated.add((double) (x / m));
             prev_X = x;
             ++p;
-        }while(x != startPoint && p != n);
+        }while(p != n);
     }
 
     public void lcg261b()
@@ -76,8 +70,7 @@ public class randomGenerator
         int a, // Multiplier
         m, // Modulus
         x,
-        prev_X, // Seed
-        startPoint;
+        prev_X; // Seed
         final int k = 5; // Maximum supported 28
 
         m = 2;
@@ -86,18 +79,13 @@ public class randomGenerator
         prev_X = 1; 
         p = 0;
 
-        x = (a * prev_X) % m;
-        startPoint = x;
-        generated.add(Double(x / m));
-        prev_X = x;
-
         do
         {
             x = (a * prev_X) % m;
-            generated.add(Double(x / m));
+            generated.add((double) (x / m));
             prev_X = x;
             ++p;
-        }while(x != startPoint && p != n);
+        }while(p != n);
     }
 
     public void lcg262()
@@ -105,26 +93,20 @@ public class randomGenerator
         int a, // Multiplier
         m, // Modulus
         x,
-        prev_X, // Seed
-        startPoint;
+        prev_X; // Seed
 
         m = 31;
         a = 3;
         prev_X = 1; 
         p = 0;
 
-        x = (a * prev_X) % m;
-        startPoint = x;
-        generated.add(Double(x / m));
-        prev_X = x;
-
         do
         {
             x = (a * prev_X) % m;
-            generated.add(Double(x / m));
+            generated.add((double)(x / m));
             prev_X = x;
             ++p;
-        }while(x != startPoint && p != n);
+        }while(p != n);
     }
 
     public void lcg263()
@@ -132,63 +114,102 @@ public class randomGenerator
         int     a, // Multiplier
                 m, // Modulus
                 x, 
-                prev_X, // Seed
-                startPoint;
+                prev_X; // Seed
         
         m = Integer.MAX_VALUE; 
         a = 16807;
         prev_X = 1; 
         p = 0;
 
-        x = (a * prev_X) % m;
-        startPoint = x;
-        generated.add(Double(x / m));
-        prev_X = x;
-
         do
         {
             x = (a * prev_X) % m;
-            generated.add(Double(x / m));
+            generated.add((double) (x / m));
             prev_X = x;
             ++p;
-        }while(x != startPoint && p != n);
+        }while(p != n);
     }
 
     public void combinedGenerator()
     {
+        long ax, ay, x, y, 
+        prev_X, prev_Y, mx,
+        my, m, w;
 
+        prev_X = 1;
+        prev_Y = 1;
+        m = 2147483562;
+        mx = 2147483563;
+        my = 2147483399;
+        ax = 40014;
+        ay = 40692;
+        
+        do
+        {
+            x = (ax * prev_X) % mx;
+            prev_X = x;
+            y = (ay * prev_Y) % my;
+            prev_Y = y;
+            w = (Math.abs(x-y)) % m;
+            generated.add((double)(w/m));
+            ++p;
+        } while(p < n);
+        
     }
 
     public void Fishman()
     {
+        long x, a, prev_X, m;
 
+        a = 48271;
+        m = Integer.MAX_VALUE;
+        prev_X = 1;
+
+        do
+        {
+            x = (a * prev_X) % m;
+            prev_X = x;
+            ++p;
+            generated.add((double)(x/m));
+        } while(p < n);
     }
 
     public void Moore()
     {
+        long x, a, prev_X, m;
 
+        a = 69621;
+        m = Integer.MAX_VALUE;
+        prev_X = 1;
+
+        do 
+        {
+            x = (a * prev_X) % m;
+            prev_X = x;
+            ++p;
+            generated.add((double) (x / m));
+        } while (p < n);
     }
 
     public void RANDU()
     {
+        long x, a, prev_X, m;
 
+        a = (long)Math.pow(2, 16) + 3L;
+        m = Integer.MAX_VALUE;
+        prev_X = 1;
+
+        do 
+        {
+            x = (a * prev_X) % m;
+            prev_X = x;
+            ++p;
+            generated.add((double) (x / m));
+        } while (p < n);
     }
 
-    public long getPeriod()
-    {
-        return p.longValue();
-    }
-
-    public ArrayList<BigInteger> getGenerated()
+    public ArrayList<Double> getGenerated()
     {
         return generated;
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        //randomGenerator r = new randomGenerator("100000000", 1);
-        
-        //System.out.println(r.getPeriod());
-        System.out.println(d);
     }
 }
