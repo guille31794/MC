@@ -1,12 +1,10 @@
-import java.math.BigInteger;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
 /*
 * @author Guillermo Girón García 
 * Clase que implementa los distintos generadores
 * de números pseudoaleatorios estudiados
 */
+
+import java.util.ArrayList;
 
 public class randomGenerator
 {

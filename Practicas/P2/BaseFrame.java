@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -15,18 +16,19 @@ import javax.swing.*;
 
 public class BaseFrame extends JFrame
 {
-    Dimension screenSize;
-    JMenuItem menuItems[];
-    JMenu menu[];
-    JMenuBar menuBar;
-    JPanel mainPanel[];
-    JRadioButton[] buttons;
-    ButtonGroup buttonGroup;
-    JTextField text;
-    JButton apply;
-    JLabel parameter, nMode, sfLabel;
-    JToggleButton nightMode;
-    SimulationFrame sf;
+    private Dimension screenSize;
+    private JMenuItem menuItems[];
+    private JMenu menu[];
+    private JMenuBar menuBar;
+    private JPanel mainPanel[];
+    private ButtonGroup buttonGroup;
+    private JTextField text;
+    private JButton exec;
+    private JLabel parameter, nMode, sfLabel;
+    private JComboBox generatorMenu;
+    private SimulationFrame sf;
+    private randomGenerator rg;
+    private int toGenerate, option;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -74,8 +76,7 @@ public class BaseFrame extends JFrame
         iniTexts();
         iniButtons();
         iniMenu();
-        iniJButtons();
-        iniToogleButtons();
+        iniCombobox();
     }
 
     // Añade paneles a la ventana
@@ -87,34 +88,26 @@ public class BaseFrame extends JFrame
         getContentPane().add(mainPanel[0]);
         mainPanel[1] = new JPanel();
         getContentPane().add(mainPanel[1]);
-        mainPanel[2] = new JPanel(new GridLayout(3,2));
+        mainPanel[2] = new JPanel();
         getContentPane().add(mainPanel[2]);
 
         mainPanel[3] = new JPanel();
         sf.getContentPane().add(mainPanel[3]);
-
-        // setLayout(null);
-        /*ImageIcon rubberduck = new ImageIcon("RubberDuck.jpg");
-        JLabel RubberDuck = new JLabel(new ImageIcon(rubberduck.getImage().getScaledInstance(
-                (int) screenSize.getWidth() / 3, (int) screenSize.getHeight() / 2, Image.SCALE_SMOOTH)));
-        mainPanel[3].add(RubberDuck);*/
     }
 
     // Añade etiquetas a la ventana
     private void iniLabels()
     {
-        parameter = new JLabel("Parameter:", SwingConstants.RIGHT);
+        parameter = new JLabel("Numbers to generate:", SwingConstants.RIGHT);
         mainPanel[0].add(parameter);
         nMode = new JLabel("Night Mode:", SwingConstants.CENTER);
         mainPanel[1].add(nMode);
-        sfLabel = new JLabel("Hi!");
-        mainPanel[3].add(sfLabel);
     }
 
     // Añade textos a la ventana
     private void iniTexts()
     {
-        text = new JTextField("     ");
+        text = new JTextField("  ");
         text.setSize(60, 20);
         mainPanel[0].add(text);
     }
@@ -122,86 +115,31 @@ public class BaseFrame extends JFrame
     // Añade botones a la ventana
     private void iniButtons()
     {
-        apply = new JButton("Apply");
-        mainPanel[0].add(apply);
+        exec = new JButton("Apply");
+        mainPanel[2].add(exec);
 
-        ActionListener apply_ = new ActionListener()
+        ActionListener exec_ = new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent ae)
             {
-                sfLabel.setText("Parameter " + text.getText() + " applied");
+                toGenerate = Integer.parseInt(text.getText());
+                option = generatorMenu.getSelectedIndex();
+                rg = new randomGenerator(toGenerate, option);
             }
         };
 
-        apply.addActionListener(apply_);
+        exec.addActionListener(exec_);
     }
 
-    // Añade Jbuttons
-    private void iniJButtons()
+    // Añade menu para seleccionar los generadores de numeros
+    private void iniCombobox()
     {
-        buttons = new JRadioButton[2];
-        buttons[0] = new JRadioButton("Hello!", true);
-        buttons[1] = new JRadioButton("Bye!", false);
-
-        mainPanel[2].add(buttons[0]);
-        mainPanel[2].add(buttons[1]);
-
-        buttonGroup = new ButtonGroup();
-        buttonGroup.add(buttons[0]);
-        buttonGroup.add(buttons[1]);
-
-        ActionListener greet = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent ae)
-            {
-                sfLabel.setText("Hi! How are you?");
-            }
-        };
-
-        ActionListener salut = new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent ae) 
-            {
-                sfLabel.setText("Bye, bye friend!");
-            }
-        };
-
-        buttons[0].addActionListener(greet);
-        buttons[1].addActionListener(salut);
-    }
-
-    // Añade botones On/Off
-    private void iniToogleButtons()
-    {
-        nightMode = new JToggleButton("On");
-        mainPanel[1].add(nightMode);
-
-        ActionListener on_off = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent ae)
-            {
-                if(nightMode.getText() == "On")
-                {
-                    mainPanel[0].setBackground(Color.DARK_GRAY);
-                    mainPanel[1].setBackground(Color.DARK_GRAY);
-                    mainPanel[2].setBackground(Color.DARK_GRAY);
-                    nightMode.setText("Off");
-                }
-                else
-                {
-                    mainPanel[0].setBackground(Color.WHITE);
-                    mainPanel[1].setBackground(Color.WHITE);
-                    mainPanel[2].setBackground(Color.WHITE);
-                    nightMode.setText("On");
-                }
-            }
-        };
-
-        nightMode.addActionListener(on_off);
+        String[] gMenu = {"lcg 26.1a", "lcg 26.1b",
+        "lcg 26.2", "lcg 26.3", "Combined generator",
+        "Fishman", "Moore", "RANDU"};
+        generatorMenu = new JComboBox(gMenu);
+        mainPanel[1].add(generatorMenu, SwingConstants.CENTER);
     }
 
     // Añade Menu
