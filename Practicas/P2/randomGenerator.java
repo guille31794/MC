@@ -10,13 +10,15 @@ public class randomGenerator
 {
     private ArrayList<Double> generated;
     private long n, // Integers to generate
-    p; // Generated counter 
+    p, seed; // Generated counter 
 
-    public randomGenerator(long n_, int o) throws Exception
+    public randomGenerator(long n_, int o, int s) throws Exception
     {
         generated = new ArrayList<Double>();
         n = n_;
+        seed = s;
         
+
         switch(o)
         {
             case 0: lcg261a();
@@ -44,21 +46,19 @@ public class randomGenerator
     {
         int a, // Multiplier
         m, // Modulus
-        x,
-        prev_X; // Seed
+        x;
         final int k = 5; // Maximum supported 28
 
         m = 2;
         m = (int)Math.pow(m, k);
-        a = 5; // 8 * i - 3 (i = 1) General form: (8 * i + o - 3)
-        prev_X = 1; 
+        a = 5; // 8 * i - 3 (i = 1) General form: (8 * i + o - 3) 
         p = 0;
 
         do
         {
-            x = (a * prev_X) % m;
+            x = (long)((a * seed)) % m;
             generated.add((double) (x / m));
-            prev_X = x;
+            seed = x;
             ++p;
         }while(p != n);
     }
@@ -67,21 +67,19 @@ public class randomGenerator
     {
         int a, // Multiplier
         m, // Modulus
-        x,
-        prev_X; // Seed
+        x;
         final int k = 5; // Maximum supported 28
 
         m = 2;
         m = (int)Math.pow(m, k);
         a = 7; // 8 * i - 3 (i = 1) General form: (8 * i + o - 3)
-        prev_X = 1; 
         p = 0;
 
         do
         {
-            x = (a * prev_X) % m;
+            x = (long)((a * seed)) % m;
             generated.add((double) (x / m));
-            prev_X = x;
+            seed = x;
             ++p;
         }while(p != n);
     }
@@ -90,19 +88,17 @@ public class randomGenerator
     {
         int a, // Multiplier
         m, // Modulus
-        x,
-        prev_X; // Seed
+        x;
 
         m = 31;
         a = 3;
-        prev_X = 1; 
         p = 0;
 
         do
         {
-            x = (a * prev_X) % m;
+            x = (a * seed) % m;
             generated.add((double)(x / m));
-            prev_X = x;
+            seed = x;
             ++p;
         }while(p != n);
     }
@@ -111,19 +107,17 @@ public class randomGenerator
     {
         int     a, // Multiplier
                 m, // Modulus
-                x, 
-                prev_X; // Seed
+                x;
         
         m = Integer.MAX_VALUE; 
         a = 16807;
-        prev_X = 1; 
         p = 0;
 
         do
         {
-            x = (a * prev_X) % m;
+            x = (a * seed) % m;
             generated.add((double) (x / m));
-            prev_X = x;
+            seed = x;
             ++p;
         }while(p != n);
     }
@@ -131,11 +125,10 @@ public class randomGenerator
     public void combinedGenerator()
     {
         long ax, ay, x, y, 
-        prev_X, prev_Y, mx,
+        seed_x, seed_y, mx,
         my, m, w;
 
-        prev_X = 1;
-        prev_Y = 1;
+        seed_x = seed_y = seed;
         m = 2147483562;
         mx = 2147483563;
         my = 2147483399;
@@ -144,10 +137,10 @@ public class randomGenerator
         
         do
         {
-            x = (ax * prev_X) % mx;
-            prev_X = x;
-            y = (ay * prev_Y) % my;
-            prev_Y = y;
+            x = (ax * seed_x) % mx;
+            seed_x = x;
+            y = (ay * seed_y) % my;
+            seed_y = y;
             w = (Math.abs(x-y)) % m;
             generated.add((double)(w/m));
             ++p;
@@ -157,16 +150,15 @@ public class randomGenerator
 
     public void Fishman()
     {
-        long x, a, prev_X, m;
+        long x, a, m;
 
         a = 48271;
         m = Integer.MAX_VALUE;
-        prev_X = 1;
 
         do
         {
-            x = (a * prev_X) % m;
-            prev_X = x;
+            x = (a * seed) % m;
+            seed = x;
             ++p;
             generated.add((double)(x/m));
         } while(p < n);
@@ -174,16 +166,15 @@ public class randomGenerator
 
     public void Moore()
     {
-        long x, a, prev_X, m;
+        long x, a, m;
 
         a = 69621;
         m = Integer.MAX_VALUE;
-        prev_X = 1;
 
         do 
         {
-            x = (a * prev_X) % m;
-            prev_X = x;
+            x = (a * seed) % m;
+            seed = x;
             ++p;
             generated.add((double) (x / m));
         } while (p < n);
@@ -191,16 +182,15 @@ public class randomGenerator
 
     public void RANDU()
     {
-        long x, a, prev_X, m;
+        long x, a, m;
 
         a = (long)Math.pow(2, 16) + 3L;
         m = Integer.MAX_VALUE;
-        prev_X = 1;
 
         do 
         {
-            x = (a * prev_X) % m;
-            prev_X = x;
+            x = (a * seed) % m;
+            seed = x;
             ++p;
             generated.add((double) (x / m));
         } while (p < n);

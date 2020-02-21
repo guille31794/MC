@@ -27,13 +27,16 @@ public class BaseFrame extends JFrame
     private JMenuBar menuBar;
     private JPanel mainPanel[];
     private ButtonGroup buttonGroup;
-    private JTextField text;
+    private JTextField toGenerat,
+    seedText;
     private JButton exec;
-    private JLabel parameter, nMode, sfLabel;
+    private JLabel parameter, nMode, sfLabel,
+    seedLabel;
     private JComboBox<String> generatorMenu;
     private final SimulationFrame sf;
     private randomGenerator rg;
-    private int toGenerate, option;
+    private int toGenerate, option,
+    seed;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -43,7 +46,7 @@ public class BaseFrame extends JFrame
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
         setSize((int) screenSize.getWidth() / 6, 
-        (int) screenSize.getHeight() / 2);
+        (int) screenSize.getHeight() / 2 + (int) screenSize.getHeight() / 3);
         sf = new SimulationFrame();
         
         iniComponents();
@@ -69,7 +72,7 @@ public class BaseFrame extends JFrame
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Simulation parameters");
-        setLocation(sf.getX() + sf.getWidth(), sf.getY());
+        setLocation(sf.getX() + sf.getWidth(), sf.getY()+sf.getY()/3);
         setLayout(new GridLayout(3,1));
     }
     
@@ -87,18 +90,17 @@ public class BaseFrame extends JFrame
     // Añade paneles a la ventana
     private void iniPanels()
     {
-        mainPanel = new JPanel[4];
+        mainPanel = new JPanel[3];
 
         mainPanel[0] = new JPanel();
         mainPanel[0].setLayout(null);
         getContentPane().add(mainPanel[0]);
         mainPanel[1] = new JPanel();
-        getContentPane().add(mainPanel[1]);
-        mainPanel[2] = new JPanel();
-        getContentPane().add(mainPanel[2]);
+        sf.getContentPane().add(mainPanel[1]);
 
-        mainPanel[3] = new JPanel();
-        sf.getContentPane().add(mainPanel[3]);
+        mainPanel[2] = new JPanel();
+        mainPanel[2].setLayout(null);
+        getContentPane().add(mainPanel[2]);
     }
 
     // Añade etiquetas a la ventana
@@ -106,21 +108,29 @@ public class BaseFrame extends JFrame
     {
         parameter = new JLabel("Numbers to generate:", SwingConstants.RIGHT);
         parameter.setBounds(50, 25, 175, 30);
+        seedLabel = new JLabel("Seed:");
+        seedLabel.setBounds(75, 75, 100, 30);
         mainPanel[0].add(parameter);
+        mainPanel[0].add(seedLabel);
     }
 
     // Añade textos a la ventana
     private void iniTexts()
     {
-        text = new JTextField();
-        text.setBounds(100, 50, 100, 30);
-        mainPanel[0].add(text);
+        toGenerat = new JTextField();
+        toGenerat.setBounds(100, 50, 100, 30);
+        seedText = new JTextField("1");
+        seedText.setBounds(100, 100, 100, 30);
+        mainPanel[0].add(toGenerat);
+        mainPanel[0].add(seedText);
     }
 
     // Añade botones a la ventana
     private void iniButtons()
     {
         exec = new JButton("Apply");
+        exec.setBounds(100, 95, 100, 50);
+        //mainPanel[2].add(exec, BorderLayout.SOUTH);
         mainPanel[2].add(exec);
 
         final ActionListener exec_ = new ActionListener()
@@ -128,11 +138,12 @@ public class BaseFrame extends JFrame
             @Override
             public void actionPerformed(final ActionEvent ae)
             {
-                toGenerate = Integer.parseInt(text.getText());
+                toGenerate = Integer.parseInt(toGenerat.getText());
                 option = generatorMenu.getSelectedIndex();
+                seed = Integer.parseInt(seedText.getText());
                 try
                 {
-                    rg = new randomGenerator(toGenerate, option);
+                    rg = new randomGenerator(toGenerate, option, seed);
                 }catch(final Exception exception){}
             }
         };
@@ -147,7 +158,9 @@ public class BaseFrame extends JFrame
         "lcg 26.2", "lcg 26.3", "Combined generator",
         "Fishman", "Moore", "RANDU"};
         generatorMenu = new JComboBox<String>(gMenu);
-        mainPanel[1].add(generatorMenu, SwingConstants.CENTER);
+        generatorMenu.setBounds(80, 20, 125, 50);
+        //mainPanel[2].add(generatorMenu, BorderLayout.CENTER);
+        mainPanel[2].add(generatorMenu);
     }
 
     // Añade Menu
