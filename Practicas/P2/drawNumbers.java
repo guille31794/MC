@@ -42,7 +42,7 @@ import java.awt.Graphics;
             x = array.get(i).doubleValue() * resX;
             ++i;
             y =  array.get(i).doubleValue() * resY;
-            g.fillRect((int)x, (int)y, 1, 1);
+            g.fillRect((int)x, (int)y, 5, 5);
         }
         
         array.clear();

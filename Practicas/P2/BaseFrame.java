@@ -30,7 +30,7 @@ public class BaseFrame extends JFrame
     private ButtonGroup buttonGroup;
     private JTextField toGenerat,
     seedText;
-    private JButton exec;
+    private JButton exec, clean;
     private JLabel parameter, nMode, sfLabel,
     seedLabel;
     private JComboBox<String> generatorMenu;
@@ -132,7 +132,6 @@ public class BaseFrame extends JFrame
     {
         exec = new JButton("Apply");
         exec.setBounds(100, 95, 100, 50);
-        //mainPanel[2].add(exec, BorderLayout.SOUTH);
         mainPanel[2].add(exec);
 
         final ActionListener exec_ = new ActionListener()
@@ -151,10 +150,35 @@ public class BaseFrame extends JFrame
                 draw = new drawNumbers(rg.getGenerated(), screenSize);
                    
                 sf.add(draw);
+                clean.setEnabled(true);
             }
         };
 
         exec.addActionListener(exec_);
+
+        clean = new JButton("Clean");
+        clean.setBounds(100, 145, 100, 50);
+
+        final ActionListener clean_ = new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(final ActionEvent ae) 
+            {
+                toGenerate = Integer.parseInt(toGenerat.getText());
+                option = generatorMenu.getSelectedIndex();
+                seed = Integer.parseInt(seedText.getText());
+                try 
+                {
+                    rg = new randomGenerator(toGenerate, option, seed);
+                } catch (final Exception exception) {}
+
+                sf.remove(draw);
+                clean.setEnabled(false);
+            }
+        };
+
+        clean.addActionListener(clean_);
+        mainPanel[2].add(clean);
     }
 
     // Añade menu para seleccionar los generadores de numeros
