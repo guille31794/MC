@@ -4,6 +4,7 @@
 * del software de simulación de las prácticas de la asignatura
 */
 
+import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -33,10 +34,11 @@ public class BaseFrame extends JFrame
     private JLabel parameter, nMode, sfLabel,
     seedLabel;
     private JComboBox<String> generatorMenu;
-    private final SimulationFrame sf;
+    private SimulationFrame sf;
     private randomGenerator rg;
     private int toGenerate, option,
     seed;
+    private drawNumbers draw;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -145,6 +147,10 @@ public class BaseFrame extends JFrame
                 {
                     rg = new randomGenerator(toGenerate, option, seed);
                 }catch(final Exception exception){}
+
+                draw = new drawNumbers(rg.getGenerated(), screenSize);
+                   
+                sf.add(draw);
             }
         };
 
@@ -159,7 +165,6 @@ public class BaseFrame extends JFrame
         "Fishman", "Moore", "RANDU"};
         generatorMenu = new JComboBox<String>(gMenu);
         generatorMenu.setBounds(80, 20, 125, 50);
-        //mainPanel[2].add(generatorMenu, BorderLayout.CENTER);
         mainPanel[2].add(generatorMenu);
     }
 

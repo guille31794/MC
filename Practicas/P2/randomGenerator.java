@@ -44,7 +44,7 @@ public class randomGenerator
 
     public void lcg261a()
     {
-        int a, // Multiplier
+        long a, // Multiplier
         m, // Modulus
         x;
         final int k = 5; // Maximum supported 28
@@ -57,7 +57,7 @@ public class randomGenerator
         do
         {
             x = (long)((a * seed)) % m;
-            generated.add((double) (x / m));
+            generated.add((double) x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -65,7 +65,7 @@ public class randomGenerator
 
     public void lcg261b()
     {
-        int a, // Multiplier
+        long a, // Multiplier
         m, // Modulus
         x;
         final int k = 5; // Maximum supported 28
@@ -78,7 +78,7 @@ public class randomGenerator
         do
         {
             x = (long)((a * seed)) % m;
-            generated.add((double) (x / m));
+            generated.add((double) x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -86,7 +86,7 @@ public class randomGenerator
 
     public void lcg262()
     {
-        int a, // Multiplier
+        long a, // Multiplier
         m, // Modulus
         x;
 
@@ -97,7 +97,7 @@ public class randomGenerator
         do
         {
             x = (a * seed) % m;
-            generated.add((double)(x / m));
+            generated.add((double)x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -105,7 +105,7 @@ public class randomGenerator
 
     public void lcg263()
     {
-        int     a, // Multiplier
+        long    a, // Multiplier
                 m, // Modulus
                 x;
         
@@ -116,7 +116,7 @@ public class randomGenerator
         do
         {
             x = (a * seed) % m;
-            generated.add((double) (x / m));
+            generated.add((double) x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -142,7 +142,7 @@ public class randomGenerator
             y = (ay * seed_y) % my;
             seed_y = y;
             w = (Math.abs(x-y)) % m;
-            generated.add((double)(w/m));
+            generated.add((double)w/m);
             ++p;
         } while(p < n);
         
@@ -160,7 +160,7 @@ public class randomGenerator
             x = (a * seed) % m;
             seed = x;
             ++p;
-            generated.add((double)(x/m));
+            generated.add((double)x/m);
         } while(p < n);
     }
 
@@ -176,7 +176,7 @@ public class randomGenerator
             x = (a * seed) % m;
             seed = x;
             ++p;
-            generated.add((double) (x / m));
+            generated.add((double) x / m);
         } while (p < n);
     }
 
@@ -192,7 +192,7 @@ public class randomGenerator
             x = (a * seed) % m;
             seed = x;
             ++p;
-            generated.add((double) (x / m));
+            generated.add((double) x / m);
         } while (p < n);
     }
 

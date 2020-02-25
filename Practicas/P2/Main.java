@@ -8,6 +8,16 @@ public class Main
 {
     public static void main(String[] args) 
     {
-        BaseFrame bs = new BaseFrame();
+        // Añado la interfaz a una cola de eventos
+        // del paquete de dibujo, en un hilo propio
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+        
+            @Override
+            public void run() 
+            {
+                new BaseFrame();      
+            }
+        });
     }
 }

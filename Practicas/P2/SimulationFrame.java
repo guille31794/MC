@@ -4,7 +4,9 @@
 * del software de simulación de las prácticas de la asignatura
 */
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
@@ -39,4 +41,17 @@ public class SimulationFrame extends JFrame
          //setLocation(bs.getX()+bs.getWidth(), bs.getY());
          setLocationRelativeTo(null);
      }
+
+     // Metodo que realiza el dibujo en la simulación
+     /*public void paint(Graphics g)
+     {
+         super.paint(g);
+
+         g.setColor(Color.BLACK);
+         //g.fillRect(0, 0, (int)screenSize.getWidth() / 3, 
+         //(int)screenSize.getHeight() / 2);
+         for(int i = 0; i < 100; ++i)
+            for(int j = 0; j < 100; ++j)
+                g.fillRect(i,j,1,1);
+     }*/
 }
