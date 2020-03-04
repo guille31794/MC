@@ -144,7 +144,7 @@ public class randomGenerator
             y = (ay * seed_y) % my;
             seed_y = y;
             w = (Math.abs(x-y)) % m;
-            generated.add((double) w / m > 0.5 ? 1 : 0);
+            generated.add((double) w    / m > 0.5 ? 1 : 0);
             ++p;
         } while(p < n);
         
