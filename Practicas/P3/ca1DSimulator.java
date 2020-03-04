@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class ca1DSimulator implements ca1DSim
 {
-    private double[] ca;
+    private int[] ca;
 
     public ca1DSimulator(ArrayList<Double> ar)
     {
