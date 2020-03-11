@@ -81,12 +81,19 @@ public class BaseFrame extends JFrame
     // Añade componentes a la ventana principal
     private void iniComponents()
     {   
-        iniPanels();
-        iniLabels();
-        iniTexts();
-        iniButtons();
-        iniMenu();
-        iniCombobox();
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+            @Override
+            public void run() 
+            {
+                iniPanels();
+                iniLabels();
+                iniTexts();
+                iniButtons();
+                iniMenu();
+                iniCombobox();
+            }
+        });        
     }
 
     // Añade paneles a la ventana
@@ -131,7 +138,7 @@ public class BaseFrame extends JFrame
     private void iniButtons()
     {
         exec = new JButton("Apply");
-        exec.setBounds(100, 95, 100, 50);
+        exec.setBounds(100, 85, 100, 50);
         mainPanel[2].add(exec);
 
         final ActionListener exec_ = new ActionListener()
@@ -157,7 +164,7 @@ public class BaseFrame extends JFrame
         exec.addActionListener(exec_);
 
         clean = new JButton("Clean");
-        clean.setBounds(100, 145, 100, 50);
+        clean.setBounds(100, 135, 100, 50);
 
         final ActionListener clean_ = new ActionListener() 
         {
@@ -178,6 +185,7 @@ public class BaseFrame extends JFrame
         };
 
         clean.addActionListener(clean_);
+        clean.setEnabled(false);
         mainPanel[2].add(clean);
     }
 
@@ -188,7 +196,7 @@ public class BaseFrame extends JFrame
         "lcg 26.2", "lcg 26.3", "Combined generator",
         "Fishman", "Moore", "RANDU"};
         generatorMenu = new JComboBox<String>(gMenu);
-        generatorMenu.setBounds(80, 20, 125, 50);
+        generatorMenu.setBounds(80, 10, 125, 50);
         mainPanel[2].add(generatorMenu);
     }
 
