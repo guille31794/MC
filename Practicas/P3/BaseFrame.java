@@ -35,11 +35,12 @@ public class BaseFrame extends JFrame
     private JLabel parameter, nMode, sfLabel,
     seedLabel, rule, boundCondition, k, r,
     generations;
-    private JComboBox<String> generatorMenu;
+    private JComboBox<String> generatorMenu, bCMenu;
     private SimulationFrame sf;
     private randomGenerator rg;
     private int toGenerate, option,
-    seed;
+    seed, rule_, k_, r_, generations_;
+    private boolean bCOption;
     private drawNumbers draw;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
@@ -110,11 +111,11 @@ public class BaseFrame extends JFrame
         rule = new JLabel("Rule:", SwingConstants.RIGHT);
         rule.setBounds(40, 60, 50, 25);
         r = new JLabel("R:", SwingConstants.RIGHT);
-        r.setBounds(175, 10, 25, 25);
+        r.setBounds(205, 10, 25, 25);
         k = new JLabel("K:", SwingConstants.RIGHT);
-        k.setBounds(175, 35, 25, 25);
+        k.setBounds(205, 35, 25, 25);
         generations = new JLabel("Generations:", SwingConstants.RIGHT);
-        generations.setBounds(100, 85, 100, 25);
+        generations.setBounds(135, 60, 100, 25);
         mainPanel[0].add(parameter);
         mainPanel[0].add(seedLabel);
         mainPanel[0].add(rule);
@@ -131,13 +132,13 @@ public class BaseFrame extends JFrame
         seedText = new JTextField("1");
         seedText.setBounds(90, 35, 50, 25);
         rText = new JTextField();
-        rText.setBounds(200, 10, 50, 25);
+        rText.setBounds(235, 10, 50, 25);
         kText = new JTextField();
-        kText.setBounds(200, 35, 50, 25); 
+        kText.setBounds(235, 35, 50, 25); 
         ruleText = new JTextField();
         ruleText.setBounds(90, 60, 50, 25);
         generationText = new JTextField();
-        generationText.setBounds(200, 85, 50, 25);
+        generationText.setBounds(235, 60, 50, 25);
         mainPanel[0].add(toGenerat);
         mainPanel[0].add(seedText);
         mainPanel[0].add(rText);
@@ -161,6 +162,16 @@ public class BaseFrame extends JFrame
                 toGenerate = Integer.parseInt(toGenerat.getText());
                 option = generatorMenu.getSelectedIndex();
                 seed = Integer.parseInt(seedText.getText());
+                k_ = Integer.parseInt(kText.getText());
+                r_ = Integer.parseInt(rText.getText());
+                rule_ = Integer.parseInt(ruleText.getText());
+                generations_ = Integer.parseInt(generationText.getText());
+
+                if(bCMenu.getSelectedIndex())
+                    bCOption = true;
+                else
+                    bCOption = false;
+
                 try
                 {
                     rg = new randomGenerator(toGenerate, option, seed);
@@ -176,21 +187,19 @@ public class BaseFrame extends JFrame
         exec.addActionListener(exec_);
 
         clean = new JButton("Clean");
-        clean.setBounds(150, 125, 75, 25);
+        clean.setBounds(185, 125, 75, 25);
 
         final ActionListener clean_ = new ActionListener() 
         {
             @Override
             public void actionPerformed(final ActionEvent ae) 
             {
-                toGenerate = Integer.parseInt(toGenerat.getText());
-                option = generatorMenu.getSelectedIndex();
-                seed = Integer.parseInt(seedText.getText());
-                try 
-                {
-                    rg = new randomGenerator(toGenerate, option, seed);
-                } catch (final Exception exception) {}
-
+                toGenerat.setText("");
+                seedText.setText("");
+                kText.setText("");
+                rText.setText("");
+                ruleText.setText("");
+                generationText.setText("");
                 sf.remove(draw);
                 clean.setEnabled(false);
             }
@@ -208,8 +217,14 @@ public class BaseFrame extends JFrame
         "lcg 26.2", "lcg 26.3", "Combined generator",
         "Fishman", "Moore", "RANDU"};
         generatorMenu = new JComboBox<String>(gMenu);
-        generatorMenu.setBounds(150, 60, 100, 25);
+        generatorMenu.setBounds(185, 85, 100, 25);
+        
+        String[] boundConditionMenu = {"Cylindrical", "Null"};
+        bCMenu = new JComboBox<String>(boundConditionMenu);
+        bCMenu.setBounds(40, 85, 100, 25);
+
         mainPanel[0].add(generatorMenu);
+        mainPanel[0].add(bCMenu);
     }
 
     // Añade Menu
