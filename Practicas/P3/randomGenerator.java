@@ -59,7 +59,7 @@ public class randomGenerator
         do
         {
             x = (long)((a * seed)) % m;
-            generated.add((double) x / m);
+            generated.add((double) x / m > 0.5 ? 1 : 0);
             seed = x;
             ++p;
         }while(p != n);
@@ -198,7 +198,7 @@ public class randomGenerator
         } while (p < n);
     }
 
-    public ArrayList<Double> getGenerated()
+    public ArrayList<Integer> getGenerated()
     {
         return generated;
     }

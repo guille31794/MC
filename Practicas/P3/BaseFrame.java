@@ -29,10 +29,10 @@ public class BaseFrame extends JFrame
     private JPanel mainPanel[];
     private ButtonGroup buttonGroup;
     private JTextField toGenerat,
-    seedText;
+    seedText, kText, rText, ruleText;
     private JButton exec, clean;
     private JLabel parameter, nMode, sfLabel,
-    seedLabel;
+    seedLabel, rule, boundCondition, k, r;
     private JComboBox<String> generatorMenu;
     private SimulationFrame sf;
     private randomGenerator rg;
@@ -48,23 +48,11 @@ public class BaseFrame extends JFrame
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
         setSize((int) screenSize.getWidth() / 6, 
-        (int) screenSize.getHeight() / 2 + (int) screenSize.getHeight() / 3);
+        (int) screenSize.getHeight() / 3);
         sf = new SimulationFrame();
         
         iniComponents();
         iniScreen();
-    }
-
-    public BaseFrame(final int height, final int width)
-    {
-        if(width < 300 || height < 300)
-            setSize(300, 300);
-        else
-            setSize(width, height);
-
-        sf = new SimulationFrame();
-        iniScreen();
-        iniComponents();    
     }
 
     // Inicializa los parámetros de la ventana
@@ -74,8 +62,8 @@ public class BaseFrame extends JFrame
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Simulation parameters");
-        setLocation(sf.getX() + sf.getWidth(), sf.getY()+sf.getY()/3);
-        setLayout(new GridLayout(3,1));
+        setLocation(sf.getX() + sf.getWidth() + 10, sf.getY());
+        setLayout(new GridLayout(2,1));
     }
     
     // Añade componentes a la ventana principal
@@ -99,47 +87,63 @@ public class BaseFrame extends JFrame
     // Añade paneles a la ventana
     private void iniPanels()
     {
-        mainPanel = new JPanel[3];
+        mainPanel = new JPanel[2];
 
         mainPanel[0] = new JPanel();
         mainPanel[0].setLayout(null);
+        mainPanel[0].setBounds(10, 10   , 200, 200);
         getContentPane().add(mainPanel[0]);
+        
         mainPanel[1] = new JPanel();
-        sf.getContentPane().add(mainPanel[1]);
-
-        mainPanel[2] = new JPanel();
-        mainPanel[2].setLayout(null);
-        getContentPane().add(mainPanel[2]);
+        sf.getContentPane().add(mainPanel[1]); 
     }
 
     // Añade etiquetas a la ventana
     private void iniLabels()
     {
-        parameter = new JLabel("Numbers to generate:", SwingConstants.RIGHT);
-        parameter.setBounds(50, 25, 175, 30);
-        seedLabel = new JLabel("Seed:");
-        seedLabel.setBounds(75, 75, 100, 30);
+        parameter = new JLabel("C.A. Size:", SwingConstants.RIGHT);
+        parameter.setBounds(-10, 25, 100, 25);
+        seedLabel = new JLabel("Seed:", SwingConstants.RIGHT);
+        seedLabel.setBounds(40, 50, 50, 25);
+        rule = new JLabel("Rule:", SwingConstants.RIGHT);
+        rule.setBounds(40, 75, 50, 25);
+        r = new JLabel("R:", SwingConstants.RIGHT);
+        r.setBounds(175, 25, 25, 25);
+        k = new JLabel("K:", SwingConstants.RIGHT);
+        k.setBounds(175, 50, 25, 25);
         mainPanel[0].add(parameter);
         mainPanel[0].add(seedLabel);
+        mainPanel[0].add(rule);
+        mainPanel[0].add(r);
+        mainPanel[0].add(k);
     }
 
     // Añade textos a la ventana
     private void iniTexts()
     {
         toGenerat = new JTextField();
-        toGenerat.setBounds(100, 50, 100, 30);
+        toGenerat.setBounds(90, 25, 50, 25);
         seedText = new JTextField("1");
-        seedText.setBounds(100, 100, 100, 30);
+        seedText.setBounds(90, 50, 50, 25);
+        rText = new JTextField();
+        rText.setBounds(200, 25, 50, 25);
+        kText = new JTextField();
+        kText.setBounds(200, 50, 50, 25); 
+        ruleText = new JTextField();
+        ruleText.setBounds(90, 75, 50, 25);
         mainPanel[0].add(toGenerat);
         mainPanel[0].add(seedText);
+        mainPanel[0].add(rText);
+        mainPanel[0].add(kText);
+        mainPanel[0].add(ruleText);
     }
 
     // Añade botones a la ventana
     private void iniButtons()
     {
         exec = new JButton("Apply");
-        exec.setBounds(100, 85, 100, 50);
-        mainPanel[2].add(exec);
+        exec.setBounds(40, 115, 75, 25);
+        mainPanel[0].add(exec);
 
         final ActionListener exec_ = new ActionListener()
         {
@@ -164,7 +168,7 @@ public class BaseFrame extends JFrame
         exec.addActionListener(exec_);
 
         clean = new JButton("Clean");
-        clean.setBounds(100, 135, 100, 50);
+        clean.setBounds(150, 115, 75, 25);
 
         final ActionListener clean_ = new ActionListener() 
         {
@@ -186,7 +190,7 @@ public class BaseFrame extends JFrame
 
         clean.addActionListener(clean_);
         clean.setEnabled(false);
-        mainPanel[2].add(clean);
+        mainPanel[0].add(clean);
     }
 
     // Añade menu para seleccionar los generadores de numeros
@@ -196,8 +200,8 @@ public class BaseFrame extends JFrame
         "lcg 26.2", "lcg 26.3", "Combined generator",
         "Fishman", "Moore", "RANDU"};
         generatorMenu = new JComboBox<String>(gMenu);
-        generatorMenu.setBounds(80, 10, 125, 50);
-        mainPanel[2].add(generatorMenu);
+        generatorMenu.setBounds(150, 75, 100, 25);
+        mainPanel[0].add(generatorMenu);
     }
 
     // Añade Menu

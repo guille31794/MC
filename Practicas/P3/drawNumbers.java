@@ -16,10 +16,10 @@ import java.awt.Graphics;
      *
      */
      private static final long serialVersionUID = 1L;
-     private ArrayList<Double> array;
+     private ArrayList<Integer> array;
      private Dimension screenSize;
 
-     public drawNumbers(ArrayList<Double> arr, Dimension scre)
+     public drawNumbers(ArrayList<Integer> arr, Dimension scre)
      {
         array = arr;
         screenSize = scre;

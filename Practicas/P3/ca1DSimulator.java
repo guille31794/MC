@@ -14,15 +14,22 @@ import java.util.ArrayList;
 public class ca1DSimulator implements ca1DSim
 {
     private int[] ca, rulesTable;
-    private int k, r ;
+    private int k, r, additiveRule;
+    // Condicion cilindrica -> True
+    // Condicion nula -> False
+    private String binaryNumber;
+    private boolean boundCondition;
 
     public ca1DSimulator(ArrayList<Integer> ar,
-    int k_, int r_)
+    int k_, int r_, boolean bc, int adr)
     {
         k = k_;
         r = r_;
         ca = ar.toArray();
-        rulesTable = new int[(int)Math.pow(k, (2 * r) + 1)];
+        rulesTable = new int[(int)Math.pow(k, (2 * r) + 1)];    
+        binaryNumber = new String();
+        boundCondition = bc;
+        additiveRule = adr;
     }
 
     @Override
