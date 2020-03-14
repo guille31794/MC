@@ -29,10 +29,12 @@ public class BaseFrame extends JFrame
     private JPanel mainPanel[];
     private ButtonGroup buttonGroup;
     private JTextField toGenerat,
-    seedText, kText, rText, ruleText;
+    seedText, kText, rText, ruleText,
+    generationText;
     private JButton exec, clean;
     private JLabel parameter, nMode, sfLabel,
-    seedLabel, rule, boundCondition, k, r;
+    seedLabel, rule, boundCondition, k, r,
+    generations;
     private JComboBox<String> generatorMenu;
     private SimulationFrame sf;
     private randomGenerator rg;
@@ -91,7 +93,7 @@ public class BaseFrame extends JFrame
 
         mainPanel[0] = new JPanel();
         mainPanel[0].setLayout(null);
-        mainPanel[0].setBounds(10, 10   , 200, 200);
+        //mainPanel[0].setBounds(10, 10, 200, 200);
         getContentPane().add(mainPanel[0]);
         
         mainPanel[1] = new JPanel();
@@ -102,47 +104,53 @@ public class BaseFrame extends JFrame
     private void iniLabels()
     {
         parameter = new JLabel("C.A. Size:", SwingConstants.RIGHT);
-        parameter.setBounds(-10, 25, 100, 25);
+        parameter.setBounds(-10, 10, 100, 25);
         seedLabel = new JLabel("Seed:", SwingConstants.RIGHT);
-        seedLabel.setBounds(40, 50, 50, 25);
+        seedLabel.setBounds(40, 35, 50, 25);
         rule = new JLabel("Rule:", SwingConstants.RIGHT);
-        rule.setBounds(40, 75, 50, 25);
+        rule.setBounds(40, 60, 50, 25);
         r = new JLabel("R:", SwingConstants.RIGHT);
-        r.setBounds(175, 25, 25, 25);
+        r.setBounds(175, 10, 25, 25);
         k = new JLabel("K:", SwingConstants.RIGHT);
-        k.setBounds(175, 50, 25, 25);
+        k.setBounds(175, 35, 25, 25);
+        generations = new JLabel("Generations:", SwingConstants.RIGHT);
+        generations.setBounds(100, 85, 100, 25);
         mainPanel[0].add(parameter);
         mainPanel[0].add(seedLabel);
         mainPanel[0].add(rule);
         mainPanel[0].add(r);
         mainPanel[0].add(k);
+        mainPanel[0].add(generations);
     }
 
     // Añade textos a la ventana
     private void iniTexts()
     {
         toGenerat = new JTextField();
-        toGenerat.setBounds(90, 25, 50, 25);
+        toGenerat.setBounds(90, 10, 50, 25);
         seedText = new JTextField("1");
-        seedText.setBounds(90, 50, 50, 25);
+        seedText.setBounds(90, 35, 50, 25);
         rText = new JTextField();
-        rText.setBounds(200, 25, 50, 25);
+        rText.setBounds(200, 10, 50, 25);
         kText = new JTextField();
-        kText.setBounds(200, 50, 50, 25); 
+        kText.setBounds(200, 35, 50, 25); 
         ruleText = new JTextField();
-        ruleText.setBounds(90, 75, 50, 25);
+        ruleText.setBounds(90, 60, 50, 25);
+        generationText = new JTextField();
+        generationText.setBounds(200, 85, 50, 25);
         mainPanel[0].add(toGenerat);
         mainPanel[0].add(seedText);
         mainPanel[0].add(rText);
         mainPanel[0].add(kText);
         mainPanel[0].add(ruleText);
+        mainPanel[0].add(generationText);
     }
 
     // Añade botones a la ventana
     private void iniButtons()
     {
         exec = new JButton("Apply");
-        exec.setBounds(40, 115, 75, 25);
+        exec.setBounds(40, 125, 75, 25);
         mainPanel[0].add(exec);
 
         final ActionListener exec_ = new ActionListener()
@@ -168,7 +176,7 @@ public class BaseFrame extends JFrame
         exec.addActionListener(exec_);
 
         clean = new JButton("Clean");
-        clean.setBounds(150, 115, 75, 25);
+        clean.setBounds(150, 125, 75, 25);
 
         final ActionListener clean_ = new ActionListener() 
         {
@@ -200,7 +208,7 @@ public class BaseFrame extends JFrame
         "lcg 26.2", "lcg 26.3", "Combined generator",
         "Fishman", "Moore", "RANDU"};
         generatorMenu = new JComboBox<String>(gMenu);
-        generatorMenu.setBounds(150, 75, 100, 25);
+        generatorMenu.setBounds(150, 60, 100, 25);
         mainPanel[0].add(generatorMenu);
     }
 
