@@ -14,18 +14,22 @@ public class ca1DSimulator implements ca1DSim
     // Condicion nula -> False
     private boolean boundCondition;
     
-    public ca1DSimulator(ArrayList<Integer> ar,
+    public ca1DSimulator(ArrayList<Double> ar,
     int k_, int r_, boolean bc, int adr)
     {
         k = k_;
         r = r_;
-        ca = ar.toArray();
+        Double[] caDouble = new Double[ar.size()];
+        caDouble = ar.toArray(caDouble);
+        ca = new int[caDouble.length];
         rulesTable = new int[(int)Math.pow(k, (2 * r) + 1)];
         boundCondition = bc;
-        additiveRule = adr;
 
-        for(int i = rulesTable.length - 1; adr >= 0; adr/=k, --i)
+        for(int i = rulesTable.length - 1; i >= 0; adr/=k, --i)
             rulesTable[i] = adr % k;
+
+        for(int i = 0; i < ca.length; ++i)
+            ca[i] = (int)Math.floor(caDouble[i] * k);
     }
 
     @Override
@@ -61,21 +65,21 @@ public class ca1DSimulator implements ca1DSim
     private char nextGenCilindrical(int j)
     {
         if (j < 0)
-             return ca[ca.length - 1 - j];
+             return (char)(ca[ca.length - 1 - j] + '0');
         else if (j >= ca.length)
-            return ca[j % k];
+            return (char)(ca[j % k] + '0');
         else
-            return ca[j];
+            return (char)(ca[j] + '0');
     }
 
     private char nextGenNull(int j)
     {            
         if (j < 0)
-            return "0";
+            return '0';
         else if (j >= ca.length)
-            return "0";
+            return '0';
         else
-            return ca[j];
+            return (char)(ca[j] + '0');
     }
 
     @Override

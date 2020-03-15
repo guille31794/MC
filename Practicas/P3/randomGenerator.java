@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class randomGenerator
 {
-    private ArrayList<Integer> generated;
+    private ArrayList<Double> generated;
     private long n, // Integers to generate
     p, seed; // Generated counter 
 
@@ -16,7 +16,7 @@ public class randomGenerator
     // generator
     public randomGenerator(long n_, int o, int s) throws Exception
     {
-        generated = new ArrayList<Integer>();
+        generated = new ArrayList<Double>();
         n = n_;
         seed = s;
         
@@ -59,7 +59,7 @@ public class randomGenerator
         do
         {
             x = (long)((a * seed)) % m;
-            generated.add((double) x / m > 0.5 ? 1 : 0);
+            generated.add((double) x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -80,7 +80,7 @@ public class randomGenerator
         do
         {
             x = (long)((a * seed)) % m;
-            generated.add((double) x / m > 0.5 ? 1 : 0);
+            generated.add((double) x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -99,7 +99,7 @@ public class randomGenerator
         do
         {
             x = (a * seed) % m;
-            generated.add((double) x / m > 0.5 ? 1 : 0);
+            generated.add((double) x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -118,7 +118,7 @@ public class randomGenerator
         do
         {
             x = (a * seed) % m;
-            generated.add((double) x / m > 0.5 ? 1 : 0);
+            generated.add((double) x / m);
             seed = x;
             ++p;
         }while(p != n);
@@ -144,7 +144,7 @@ public class randomGenerator
             y = (ay * seed_y) % my;
             seed_y = y;
             w = (Math.abs(x-y)) % m;
-            generated.add((double) w    / m > 0.5 ? 1 : 0);
+            generated.add((double) w / m);
             ++p;
         } while(p < n);
         
@@ -162,7 +162,7 @@ public class randomGenerator
             x = (a * seed) % m;
             seed = x;
             ++p;
-            generated.add((double) x / m > 0.5 ? 1 : 0);
+            generated.add((double) x / m);
         } while(p < n);
     }
 
@@ -178,7 +178,7 @@ public class randomGenerator
             x = (a * seed) % m;
             seed = x;
             ++p;
-            generated.add((double) x / m > 0.5 ? 1 : 0);
+            generated.add((double) x / m);
         } while (p < n);
     }
 
@@ -194,11 +194,11 @@ public class randomGenerator
             x = (a * seed) % m;
             seed = x;
             ++p;
-            generated.add((double) x / m > 0.5 ? 1 : 0);
+            generated.add((double) x / m);
         } while (p < n);
     }
 
-    public ArrayList<Integer> getGenerated()
+    public ArrayList<Double> getGenerated()
     {
         return generated;
     }

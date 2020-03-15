@@ -42,6 +42,7 @@ public class BaseFrame extends JFrame
     seed, rule_, k_, r_, generations_;
     private boolean bCOption;
     private drawNumbers draw;
+    private ca1DSimulator ca;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -129,7 +130,7 @@ public class BaseFrame extends JFrame
     {
         toGenerat = new JTextField();
         toGenerat.setBounds(90, 10, 50, 25);
-        seedText = new JTextField("1");
+        seedText = new JTextField();
         seedText.setBounds(90, 35, 50, 25);
         rText = new JTextField();
         rText.setBounds(235, 10, 50, 25);
@@ -167,19 +168,24 @@ public class BaseFrame extends JFrame
                 rule_ = Integer.parseInt(ruleText.getText());
                 generations_ = Integer.parseInt(generationText.getText());
 
-                if(bCMenu.getSelectedIndex())
+                if(bCMenu.getSelectedIndex() == 0)
                     bCOption = true;
                 else
                     bCOption = false;
+
+                if(toGenerate > sf.getWidth())
+                    toGenerate = sf.getWidth();
 
                 try
                 {
                     rg = new randomGenerator(toGenerate, option, seed);
                 }catch(final Exception exception){}
 
-                draw = new drawNumbers(rg.getGenerated(), screenSize);
-                   
-                sf.add(draw);
+                //draw = new drawNumbers(rg.getGenerated(), screenSize);
+                ca = new ca1DSimulator(rg.getGenerated(), k_, r_, bCOption,
+                rule_);
+                
+                //sf.add(draw);
                 clean.setEnabled(true);
             }
         };
