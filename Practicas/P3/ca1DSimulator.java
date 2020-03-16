@@ -7,32 +7,41 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ca1DSimulator extends ca1DSim implements Runnable 
+public class ca1DSimulator implements Runnable 
 {
     private static int[] rulesTable;
-    private static int k, r; 
+    private static int k, r, gen, nThreads; 
     private static int[][] caMutated;
     // Condicion cilindrica -> True
     // Condicion nula -> False
-    private boolean boundCondition;
-    private int gen, prevGen,
+    private static boolean boundCondition;
+    private int prevGen,
     currentGen, start, end;
+    private static CyclicBarrier barrier;
+    private static Runnable reUse;
+
+    private static void createBarrier() 
+    {
+        barrier = new CyclicBarrier(nThreads);
+    }
     
     // Instanciación de los parámetros de clase
-    public ca1DSimulator(ArrayList<Double> ar,
-    int k_, int r_, boolean bc, int adr, int g)
+    public static void setCA(ArrayList<Double> ar,
+    int k_, int r_, boolean bc, int adr, int g, int nt)
     {
         k = k_;
         r = r_;
         gen = g;
-        prevGen = 0;
-        currentGen = 1;
         Double[] caDouble = new Double[ar.size()];
         caDouble = ar.toArray(caDouble);
         caMutated = new int[gen+1][caDouble.length];
         rulesTable = new int[(int)Math.pow(k, (2 * r) + 1)];
         boundCondition = bc;
+        nThreads = nt;
+        reUse = () -> createBarrier();
+        barrier = new CyclicBarrier(nThreads, reUse);
 
         int cont = 0;
 
@@ -53,21 +62,27 @@ public class ca1DSimulator extends ca1DSim implements Runnable
             caMutated[0][i] = (int)Math.floor(caDouble[i] * k);
     }
 
-
+    // Creación de hebras
+    public ca1DSimulator(int s, int e)
+    {
+        prevGen = 0;
+        currentGen = 1;
+        start = s;
+        end = e;
+    }
 
     @Override
     public void run() 
     {
-
+        caComputation();
     }
 
-    @Override
     public void nextGen()
     {
         String differentBase;
         int index, pow;
 
-        for (int i = 0; i < caMutated[prevGen].length; ++i) 
+        for (int i = start; i < end; ++i) 
         {
             differentBase = new String();
             index = 0;
@@ -113,14 +128,17 @@ public class ca1DSimulator extends ca1DSim implements Runnable
             return (char)(caMutated[prevGen][j] + '0');
     }
 
-    @Override
     public void caComputation()
     {
         while(currentGen < gen)
+        {
             nextGen();
+            try { barrier.await(); } catch (InterruptedException e) {}
+            catch(BrokenBarrierException e) {}
+        }
     }
 
-    public int[][] status()
+    public static int[][] status()
     {
         return caMutated;
     }

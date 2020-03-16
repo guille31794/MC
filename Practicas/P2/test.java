@@ -1,8 +1,8 @@
 public class test
 {
     public static void main(String[] args) {
-        double d = 13.345675;
-        int i = (int)d;
-        System.out.println(i);
+        int[] v = {1,2,3,4,5};
+        
+        System.out.println(v.length);       
     }
 }

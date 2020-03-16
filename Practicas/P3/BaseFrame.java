@@ -43,7 +43,8 @@ public class BaseFrame extends JFrame
     private randomGenerator rg;
     private int toGenerate, option,
     seed, rule_, k_, r_, generations_,
-    prevK, threadNumber;
+    prevK, threadNumber, frame,
+    start, end;
     private boolean bCOption;
     private drawCA draw;
     private ca1DSimulator ca;
@@ -60,7 +61,7 @@ public class BaseFrame extends JFrame
         prevK = 0;
         random = new Random();
         threadNumber = 4;
-        tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber);
+        tpe = (ThreadPoolExecutor)Executors.newFixedThreadPool(threadNumber);
 
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
@@ -214,12 +215,21 @@ public class BaseFrame extends JFrame
                     rg = new randomGenerator(toGenerate, option, seed);
                 }catch(final Exception exception){}
 
-                ca = new ca1DSimulator(rg.getGenerated(), k_, r_, bCOption,
-                rule_, generations_);
+                frame = toGenerate / threadNumber;
+                start = 0;
+                end = frame;
+
+                ca1DSimulator.setCA(rg.getGenerated(), k_, r_, bCOption,
+                rule_, generations_, threadNumber);
+
+                for(int i = 0; i < threadNumber; ++i)
+                {
+                    tpe.execute(new ca1DSimulator(start, end));
+                    start = end + 1;
+                    end += frame; 
+                }
                 
-                ca.caComputation(generations_);
-                
-                draw = new drawCA(ca.status(), screenSize, color);
+                draw = new drawCA(ca1DSimulator.status(), screenSize, color);
                 sf.add(draw);
 
                 clean.setEnabled(true);
