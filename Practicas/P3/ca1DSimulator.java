@@ -5,32 +5,60 @@
 */
 
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.concurrent.*;
 
-public class ca1DSimulator implements ca1DSim
+public class ca1DSimulator extends ca1DSim implements Runnable 
 {
-    private int[] ca, rulesTable;
-    private int k, r;
+    private static int[] rulesTable;
+    private static int k, r; 
+    private static int[][] caMutated;
     // Condicion cilindrica -> True
     // Condicion nula -> False
     private boolean boundCondition;
-    private int[][] caMutated;
+    private int gen, prevGen,
+    currentGen, start, end;
     
+    // Instanciación de los parámetros de clase
     public ca1DSimulator(ArrayList<Double> ar,
-    int k_, int r_, boolean bc, int adr)
+    int k_, int r_, boolean bc, int adr, int g)
     {
         k = k_;
         r = r_;
+        gen = g;
+        prevGen = 0;
+        currentGen = 1;
         Double[] caDouble = new Double[ar.size()];
         caDouble = ar.toArray(caDouble);
-        ca = new int[caDouble.length];
+        caMutated = new int[gen+1][caDouble.length];
         rulesTable = new int[(int)Math.pow(k, (2 * r) + 1)];
         boundCondition = bc;
 
-        for(int i = rulesTable.length - 1; i >= 0; adr/=k, --i)
-            rulesTable[i] = adr % k;
+        int cont = 0;
 
-        for(int i = 0; i < ca.length; ++i)
-            ca[i] = (int)Math.floor(caDouble[i] * k);
+        for(int i = rulesTable.length - 1; i >= 0; adr/=k, --i)
+        {
+            ++cont;
+            rulesTable[i] = adr % k;
+        }
+
+        for(int i = rulesTable.length - 1; i >= 0; --cont, --i)
+        {
+            int aux = rulesTable[i];
+            rulesTable[i] = rulesTable[rulesTable.length - cont];
+            rulesTable[rulesTable.length - cont] = aux; 
+        }
+        
+        for(int i = 0; i < caMutated[0].length; ++i)
+            caMutated[0][i] = (int)Math.floor(caDouble[i] * k);
+    }
+
+
+
+    @Override
+    public void run() 
+    {
+
     }
 
     @Override
@@ -39,12 +67,12 @@ public class ca1DSimulator implements ca1DSim
         String differentBase;
         int index, pow;
 
-        for (int i = 0; i < ca.length; ++i) 
+        for (int i = 0; i < caMutated[prevGen].length; ++i) 
         {
             differentBase = new String();
             index = 0;
 
-            for (int j = i - r; j < i + r; ++j)
+            for (int j = i - r; j <= (i + r); ++j)
             {
                 if (boundCondition)
                     // Condicion de frontera cilindrica
@@ -54,46 +82,42 @@ public class ca1DSimulator implements ca1DSim
                     differentBase += nextGenNull(j);
             }
 
-            pow = differentBase.length();
+            pow = differentBase.length() - 1;
 
             for (int j = 0; j < differentBase.length(); ++j, --pow)
-                index += Character.getNumericValue(differentBase.charAt(j)) * Math.pow(k, index);
+                index += Character.getNumericValue(differentBase.charAt(j)) * Math.pow(k, pow);
 
-            ca[i] = rulesTable[index];
+            caMutated[currentGen][i] = rulesTable[rulesTable.length - 1 - index];
         }
+        prevGen = currentGen;
+        ++currentGen;
     }
 
     private char nextGenCilindrical(int j)
     {
         if (j < 0)
-             return (char)(ca[ca.length - 1 - j] + '0');
-        else if (j >= ca.length)
-            return (char)(ca[j % k] + '0');
+             return (char)(caMutated[prevGen][caMutated[prevGen].length - 1 + j] + '0');
+        else if (j >= caMutated[prevGen].length)
+            return (char)(caMutated[prevGen][j % k] + '0');
         else
-            return (char)(ca[j] + '0');
+            return (char)(caMutated[prevGen][j] + '0');
     }
 
     private char nextGenNull(int j)
     {            
         if (j < 0)
             return '0';
-        else if (j >= ca.length)
+        else if (j >= caMutated[prevGen].length)
             return '0';
         else
-            return (char)(ca[j] + '0');
+            return (char)(caMutated[prevGen][j] + '0');
     }
 
     @Override
-    public void caComputation(int nGen)
+    public void caComputation()
     {
-        caMutated = new int[nGen][ca.length];
-        caMutated[0] = ca;
-
-        for(int i = 1; i < nGen; ++i)
-        {
+        while(currentGen < gen)
             nextGen();
-            caMutated[i] = ca;
-        }
     }
 
     public int[][] status()

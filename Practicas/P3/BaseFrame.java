@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.*;
 import java.util.Random;
+import java.util.concurrent.*;
 
 public class BaseFrame extends JFrame
 {
@@ -42,13 +43,14 @@ public class BaseFrame extends JFrame
     private randomGenerator rg;
     private int toGenerate, option,
     seed, rule_, k_, r_, generations_,
-    prevK;
+    prevK, threadNumber;
     private boolean bCOption;
     private drawCA draw;
     private ca1DSimulator ca;
     private Random random;
     private float hue, saturation, luminance;
     private Color[] color;
+    private ThreadPoolExecutor tpe;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -57,6 +59,8 @@ public class BaseFrame extends JFrame
     {   
         prevK = 0;
         random = new Random();
+        threadNumber = 4;
+        tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber);
 
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
@@ -182,9 +186,6 @@ public class BaseFrame extends JFrame
                 else
                     bCOption = false;
 
-                if(toGenerate > sf.getWidth())
-                    toGenerate = sf.getWidth();
-
                 if(prevK != k_)
                 {
                     color = new Color[k_];
@@ -200,13 +201,21 @@ public class BaseFrame extends JFrame
                     prevK = k_;
                 }
 
+                // Adapto el número de células y generaciones
+                // a la pantalla
+                if(toGenerate > sf.getWidth() / 5)
+                    toGenerate = sf.getWidth() / 5;
+
+                if( generations_ > sf.getHeight() / 5)
+                    generations_ = sf.getHeight() / 5;
+
                 try
                 {
                     rg = new randomGenerator(toGenerate, option, seed);
                 }catch(final Exception exception){}
 
                 ca = new ca1DSimulator(rg.getGenerated(), k_, r_, bCOption,
-                rule_);
+                rule_, generations_);
                 
                 ca.caComputation(generations_);
                 
