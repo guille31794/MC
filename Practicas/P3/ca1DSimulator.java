@@ -13,6 +13,7 @@ public class ca1DSimulator implements ca1DSim
     // Condicion cilindrica -> True
     // Condicion nula -> False
     private boolean boundCondition;
+    private int[][] caMutated;
     
     public ca1DSimulator(ArrayList<Double> ar,
     int k_, int r_, boolean bc, int adr)
@@ -85,14 +86,18 @@ public class ca1DSimulator implements ca1DSim
     @Override
     public void caComputation(int nGen)
     {
-        for(int i = 0; i < nGen; ++i)
+        caMutated = new int[nGen][ca.length];
+        caMutated[0] = ca;
+
+        for(int i = 1; i < nGen; ++i)
         {
             nextGen();
+            caMutated[i] = ca;
         }
     }
 
-    public int[] status()
+    public int[][] status()
     {
-        return ca;
+        return caMutated;
     }
 }

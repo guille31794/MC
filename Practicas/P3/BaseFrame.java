@@ -10,10 +10,12 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.Random;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.*;
+import java.util.Random;
 
 public class BaseFrame extends JFrame
 {
@@ -39,16 +41,23 @@ public class BaseFrame extends JFrame
     private SimulationFrame sf;
     private randomGenerator rg;
     private int toGenerate, option,
-    seed, rule_, k_, r_, generations_;
+    seed, rule_, k_, r_, generations_,
+    prevK;
     private boolean bCOption;
-    private drawNumbers draw;
+    private drawCA draw;
     private ca1DSimulator ca;
+    private Random random;
+    private float hue, saturation, luminance;
+    private Color[] color;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
     // Le aplica
     public BaseFrame()
     {   
+        prevK = 0;
+        random = new Random();
+
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
         setSize((int) screenSize.getWidth() / 6, 
@@ -176,16 +185,34 @@ public class BaseFrame extends JFrame
                 if(toGenerate > sf.getWidth())
                     toGenerate = sf.getWidth();
 
+                if(prevK != k_)
+                {
+                    color = new Color[k_];
+
+                    for(int i = 0; i < k_; ++i)
+                    {
+                        hue = random.nextFloat();
+                        saturation = random.nextFloat() / 2.0f + 0.5f;
+                        luminance = random.nextFloat() / 2.0f + 0.5f;
+                        color[i] = Color.getHSBColor(hue, saturation, luminance);
+                    }
+
+                    prevK = k_;
+                }
+
                 try
                 {
                     rg = new randomGenerator(toGenerate, option, seed);
                 }catch(final Exception exception){}
 
-                //draw = new drawNumbers(rg.getGenerated(), screenSize);
                 ca = new ca1DSimulator(rg.getGenerated(), k_, r_, bCOption,
                 rule_);
                 
-                //sf.add(draw);
+                ca.caComputation(generations_);
+                
+                draw = new drawCA(ca.status(), screenSize, color);
+                sf.add(draw);
+
                 clean.setEnabled(true);
             }
         };

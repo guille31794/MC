@@ -9,42 +9,47 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.awt.Canvas;
 import java.awt.Graphics;
+import java.util.Random;
+import javax.swing.JPanel;
 
- public class drawNumbers extends Canvas
+ public class drawCA extends Canvas
  {
      /**
      *
      */
      private static final long serialVersionUID = 1L;
-     private ArrayList<Integer> array;
+     private int[][] ca;
      private Dimension screenSize;
+     Color[] color;
+     int x, y;
 
-     public drawNumbers(ArrayList<Integer> arr, Dimension scre)
+     public drawCA(int[][] arr, Dimension scre, Color[] c)
      {
-        array = arr;
+        color = c;
+        ca = arr;
         screenSize = scre;
-        //setBackground(Color.WHITE);
         setSize((int) screenSize.getWidth() / 3, 
         (int) screenSize.getHeight() / 2);
         setVisible(true);
+        x = 0;
+        y = 0;
      }
 
      public void paint(Graphics g)
      {
         super.paint(g);
-
-        double x, y, resX = screenSize.getWidth(), resY = screenSize.getHeight();
-
-        g.setColor(Color.BLACK);
         
-        for(int i = 0; i < array.size() - 1; ++i)
+        for(int i = 0; i < ca.length - 1; ++i)
         {
-            x = array.get(i).doubleValue() * resX;
-            ++i;
-            y =  array.get(i).doubleValue() * resY;
-            g.fillRect((int)x, (int)y, 5, 5);
+            for (int j = 0; j < ca[i].length - 1; ++j) 
+            {
+                g.setColor(color[ca[i][j]]);
+                g.drawRect(x, y, 5, 5);
+                g.fillRect(x, y, 5, 5);
+                x += 5;    
+            }
+            x = 0;
+            y += 5;
         }
-        
-        array.clear();
      }
  }
