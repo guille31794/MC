@@ -52,6 +52,8 @@ public class BaseFrame extends JFrame
     private float hue, saturation, luminance;
     private Color[] color;
     private ThreadPoolExecutor tpe;
+    private JFrame densityWindow;
+    private plotDensity plot;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -61,13 +63,13 @@ public class BaseFrame extends JFrame
         prevK = 0;
         random = new Random();
         threadNumber = 4;
-        tpe = (ThreadPoolExecutor)Executors.newFixedThreadPool(threadNumber);
 
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
         setSize((int) screenSize.getWidth() / 6, 
         (int) screenSize.getHeight() / 3);
         sf = new SimulationFrame();
+        densityWindow = new JFrame("Density Graph");
         
         iniComponents();
         iniScreen();
@@ -76,12 +78,16 @@ public class BaseFrame extends JFrame
     // Inicializa los parámetros de la ventana
     private void iniScreen()
     {
-        setMinimumSize(new Dimension(300, 300));
+        setMinimumSize(new Dimension(325, 300));
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Simulation parameters");
         setLocation(sf.getX() + sf.getWidth() + 10, sf.getY());
         setLayout(new GridLayout(2,1));
+        densityWindow.setVisible(true);
+        densityWindow.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        densityWindow.setLocation(this.getX(), this.getY() + this.getHeight());
+        densityWindow.setMinimumSize(new Dimension(325,175));
     }
     
     // Añade componentes a la ventana principal
@@ -109,7 +115,6 @@ public class BaseFrame extends JFrame
 
         mainPanel[0] = new JPanel();
         mainPanel[0].setLayout(null);
-        //mainPanel[0].setBounds(10, 10, 200, 200);
         getContentPane().add(mainPanel[0]);
         
         mainPanel[1] = new JPanel();
@@ -174,6 +179,7 @@ public class BaseFrame extends JFrame
             @Override
             public void actionPerformed(final ActionEvent ae)
             {
+                tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber);
                 toGenerate = Integer.parseInt(toGenerat.getText());
                 option = generatorMenu.getSelectedIndex();
                 seed = Integer.parseInt(seedText.getText());
@@ -228,10 +234,17 @@ public class BaseFrame extends JFrame
                     start = end + 1;
                     end += frame; 
                 }
+
+                tpe.shutdown();
+                try
+                {
+                    while(!tpe.awaitTermination(2, TimeUnit.SECONDS));
+                } catch(InterruptedException e) {}
                 
                 draw = new drawCA(ca1DSimulator.status(), screenSize, color);
                 sf.add(draw);
-
+                plot = new plotDensity(ca1DSimulator.status(), color, screenSize, k_);
+                densityWindow.add(plot);
                 clean.setEnabled(true);
             }
         };
@@ -253,6 +266,7 @@ public class BaseFrame extends JFrame
                 ruleText.setText("");
                 generationText.setText("");
                 sf.remove(draw);
+                densityWindow.remove(plot);;
                 clean.setEnabled(false);
             }
         };

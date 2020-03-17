@@ -6,11 +6,8 @@
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.awt.Canvas;
 import java.awt.Graphics;
-import java.util.Random;
-import javax.swing.JPanel;
 
  public class drawCA extends Canvas
  {
