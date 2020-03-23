@@ -54,6 +54,8 @@ public class BaseFrame extends JFrame
     private ThreadPoolExecutor tpe;
     private JFrame densityWindow;
     private plotDensity plot;
+    private hammingCurve hc;
+    private JFrame hammingWindow;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -70,6 +72,7 @@ public class BaseFrame extends JFrame
         (int) screenSize.getHeight() / 3 + (int)screenSize.getHeight() / 4);
         sf = new SimulationFrame();
         densityWindow = new JFrame("Density Graph");
+        hammingWindow = new JFrame("Hamming Curve");
         
         iniComponents();
         iniScreen();
@@ -89,6 +92,10 @@ public class BaseFrame extends JFrame
         densityWindow.setLocation(sf.getX(), sf.getY() + sf.getHeight());
         densityWindow.setSize(sf.getWidth(), sf.getHeight() / 3);
         densityWindow.setMinimumSize(new Dimension(325,175));
+        hammingWindow.setVisible(false);
+        hammingWindow.setLocationRelativeTo(null);
+        hammingWindow.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        hammingWindow.setSize(sf.getWidth(), sf.getHeight() / 3);
     }
     
     // Añade componentes a la ventana principal
@@ -246,7 +253,7 @@ public class BaseFrame extends JFrame
                 tpe.shutdown();
                 try
                 {
-                    while(!tpe.awaitTermination(2, TimeUnit.SECONDS));
+                    while(!tpe.awaitTermination(5, TimeUnit.SECONDS));
                 } catch(InterruptedException e) {}
                 
                 draw = new drawCA(ca1DSimulator.status(), screenSize, color);
@@ -300,7 +307,27 @@ public class BaseFrame extends JFrame
             @Override
             public void actionPerformed(final ActionEvent ae)
             {
+                tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber);
+                hammindDistance.setParameters(ca1DSimulator.status());
+                start = 1;
+                end = frame;
 
+                for(int i = 0; i < threadNumber; ++i)
+                {
+                    tpe.submit(new hammingDistance(start, end));
+                    start = end + 1;
+                    end += frame;
+                }
+
+                tpe.shutdown();
+                try 
+                {
+                    while (!tpe.awaitTermination(5, TimeUnit.SECONDS));
+                } catch (InterruptedException e) {}
+
+                hc = hammingCurve(hammingDistance.distance());
+                hammingWindow.add(hc);
+                hammingWindow.setVisible(true);
             }
         };
 
@@ -316,7 +343,7 @@ public class BaseFrame extends JFrame
             @Override
             public void actionPerformed(final ActionEvent ae)
             {
-                
+
             }
         };
 
