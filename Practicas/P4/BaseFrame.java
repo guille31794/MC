@@ -10,11 +10,14 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.time.temporal.Temporal;
 import java.util.Random;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.*;
+import javax.swing.plaf.DimensionUIResource;
+
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -44,8 +47,8 @@ public class BaseFrame extends JFrame
     private int toGenerate, option,
     seed, rule_, k_, r_, generations_,
     prevK, threadNumber, frame,
-    start, end;
-    private boolean bCOption;
+    start, end, cell;
+    private boolean bCOption, temporalEntropieFlag;
     private drawCA draw;
     private ca1DSimulator ca;
     private Random random;
@@ -55,7 +58,9 @@ public class BaseFrame extends JFrame
     private JFrame densityWindow;
     private plotDensity plot;
     private hammingCurve hc;
-    private JFrame hammingWindow;
+    private JFrame hammingWindow, temporalEntropieWindow,
+    spacialEntropieWindow;
+    private TemporalEntropie ce;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -73,6 +78,8 @@ public class BaseFrame extends JFrame
         sf = new SimulationFrame();
         densityWindow = new JFrame("Density Graph");
         hammingWindow = new JFrame("Hamming Curve");
+        temporalEntropieWindow = new JFrame("Temporal Entropie");
+        spacialEntropieWindow = new JFrame("Spacial Entropie");
         
         iniComponents();
         iniScreen();
@@ -94,8 +101,15 @@ public class BaseFrame extends JFrame
         densityWindow.setMinimumSize(new Dimension(325,175));
         hammingWindow.setVisible(false);
         hammingWindow.setLocationRelativeTo(null);
-        hammingWindow.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        hammingWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
         hammingWindow.setSize(sf.getWidth(), sf.getHeight() / 3);
+        temporalEntropieWindow.setVisible(false);
+        temporalEntropieWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        temporalEntropieWindow.setLocationRelativeTo(null);
+        temporalEntropieWindow.setSize(150, 75);
+        spacialEntropieWindow.setVisible(false);
+        spacialEntropieWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        spacialEntropieWindow.setLocationRelativeTo(null);
     }
     
     // Añade componentes a la ventana principal
@@ -291,6 +305,8 @@ public class BaseFrame extends JFrame
                 spacialEntropieButton.setEnabled(false);
                 temporalEntropieButton.setEnabled(false);
                 cellEntropieText.setEnabled(false);
+                hammingWindow.remove(hc);
+                temporalEntropieFlag = false;
             }
         };
 
@@ -308,14 +324,14 @@ public class BaseFrame extends JFrame
             public void actionPerformed(final ActionEvent ae)
             {
                 tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber);
-                hammindDistance.setParameters(ca1DSimulator.status());
+                hammingDistance.setParameters(ca1DSimulator.status());
                 start = 1;
                 end = frame;
 
                 for(int i = 0; i < threadNumber; ++i)
                 {
                     tpe.submit(new hammingDistance(start, end));
-                    start = end + 1;
+                    start = end;
                     end += frame;
                 }
 
@@ -325,9 +341,10 @@ public class BaseFrame extends JFrame
                     while (!tpe.awaitTermination(5, TimeUnit.SECONDS));
                 } catch (InterruptedException e) {}
 
-                hc = hammingCurve(hammingDistance.distance());
-                hammingWindow.add(hc);
+                hc = new hammingCurve(hammingDistance.distance(), 
+                new Dimension(hammingWindow.getWidth(), hammingWindow.getHeight()));
                 hammingWindow.setVisible(true);
+                hammingWindow.add(hc);
             }
         };
 
@@ -343,7 +360,7 @@ public class BaseFrame extends JFrame
             @Override
             public void actionPerformed(final ActionEvent ae)
             {
-
+                  
             }
         };
 
@@ -359,7 +376,15 @@ public class BaseFrame extends JFrame
             @Override
             public void actionPerformed(final ActionEvent ae)
             {
-                
+                if(temporalEntropieFlag)
+                    temporalEntropieWindow.remove(ce);
+
+                TemporalEntropie.setParameters(ca.status());
+                cell = Integer.parseInt(cellEntropieText.getText());
+                ce = new TemporalEntropie(cell);
+                temporalEntropieWindow.add(ce);
+                temporalEntropieWindow.setVisible(true);
+                temporalEntropieFlag = true;
             }
         };
 
