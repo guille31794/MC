@@ -48,7 +48,8 @@ public class BaseFrame extends JFrame
     seed, rule_, k_, r_, generations_,
     prevK, threadNumber, frame,
     start, end, cell;
-    private boolean bCOption, temporalEntropieFlag;
+    private boolean bCOption, temporalEntropieFlag,
+    SpacialEntropieFlag;
     private drawCA draw;
     private ca1DSimulator ca;
     private Random random;
@@ -61,6 +62,7 @@ public class BaseFrame extends JFrame
     private JFrame hammingWindow, temporalEntropieWindow,
     spacialEntropieWindow;
     private TemporalEntropie ce;
+    private SpacialEntropie se;
 
     // Establece la ventana a la mitad de la resolución de la pantalla
     // Y la coloca en el centro
@@ -110,6 +112,7 @@ public class BaseFrame extends JFrame
         spacialEntropieWindow.setVisible(false);
         spacialEntropieWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
         spacialEntropieWindow.setLocationRelativeTo(null);
+        spacialEntropieWindow.setSize(sf.getWidth(), sf.getHeight() / 3);
     }
     
     // Añade componentes a la ventana principal
@@ -279,6 +282,7 @@ public class BaseFrame extends JFrame
                 spacialEntropieButton.setEnabled(true);
                 temporalEntropieButton.setEnabled(true);
                 cellEntropieText.setEnabled(true);
+                SpacialEntropieFlag = false;
             }
         };
 
@@ -307,6 +311,7 @@ public class BaseFrame extends JFrame
                 cellEntropieText.setEnabled(false);
                 hammingWindow.remove(hc);
                 temporalEntropieFlag = false;
+                SpacialEntropieFlag = false;
             }
         };
 
@@ -360,7 +365,32 @@ public class BaseFrame extends JFrame
             @Override
             public void actionPerformed(final ActionEvent ae)
             {
-                  
+                SpacialEntropie.setParameters(ca.status(), k_,
+                new Dimension(spacialEntropieWindow.getWidth(), hammingWindow.getHeight()));
+                tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber);
+                start = 0;
+                end = frame;
+
+                for(int i = 0; i < threadNumber; ++i)
+                {
+                    se = new SpacialEntropie(start, end);
+                    tpe.submit(se);
+                    start = end + 1;
+                    end += frame;
+                }
+
+                tpe.shutdown();
+                try 
+                {
+                    while (!tpe.awaitTermination(5, TimeUnit.SECONDS));
+                } catch (InterruptedException e) {}
+
+                if(SpacialEntropieFlag)
+                    spacialEntropieWindow.remove(se);
+                
+                SpacialEntropieFlag = true;
+                spacialEntropieWindow.add(se);
+                spacialEntropieWindow.setVisible(true);
             }
         };
 
