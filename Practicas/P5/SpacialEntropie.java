@@ -28,6 +28,13 @@ import java.awt.Graphics;
         entropie = new double[ca.length][k];
     }
 
+    public static void setParameters(int[][] ca_, int k_) 
+    {
+        ca = ca_;
+        k = k_;
+        entropie = new double[ca.length][k];
+    }
+
     public SpacialEntropie(int s, int e)
     {
         start = s;
@@ -59,6 +66,16 @@ import java.awt.Graphics;
             for(int j = 1; j < k; ++j)
                 entropie[i][0] += entropie[i][j] / ca[i].length;
         }
+    }
+
+    public static double meanEntropie()
+    {
+        double mean = 0.0;
+        
+        for(int i = 0; i < entropie.length; ++i)
+            mean += entropie[i][0];
+
+        return mean /= entropie.length;
     }
 
     public void paint(Graphics g)
