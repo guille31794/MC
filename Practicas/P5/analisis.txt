@@ -1,0 +1,124 @@
+Rule 3 has:
+Distance: 982.10125
+Spacial Entropie: 0.9205492712205472
+Temporal Entropie: 0.9995
+Rule 19 has:
+Distance: 984.81675
+Spacial Entropie: 0.9659840991465681
+Temporal Entropie: 1.0
+Rule 21 has:
+Distance: 979.56725
+Spacial Entropie: 0.9777391196097909
+Temporal Entropie: 0.9965
+Rule 23 has:
+Distance: 984.80475
+Spacial Entropie: 0.994850805696268
+Temporal Entropie: 1.0
+Rule 33 has:
+Distance: 781.83425
+Spacial Entropie: 0.9426273618880189
+Temporal Entropie: 0.9995
+Rule 35 has:
+Distance: 980.03475
+Spacial Entropie: 0.9800346399610582
+Temporal Entropie: 0.9995
+Rule 37 has:
+Distance: 766.78825
+Spacial Entropie: 0.9589019437286991
+Temporal Entropie: 0.999
+Rule 39 has:
+Distance: 980.88275
+Spacial Entropie: 0.9807833749632273
+Temporal Entropie: 0.999
+Rule 50 has:
+Distance: 984.79375
+Spacial Entropie: 0.999254993900893
+Temporal Entropie: 1.0
+Rule 51 has:
+Distance: 984.87425
+Spacial Entropie: 0.9984901586821362
+Temporal Entropie: 1.0
+Rule 55 has:
+Distance: 984.85275
+Spacial Entropie: 0.9953052388550783
+Temporal Entropie: 1.0
+Rule 58 has:
+Distance: 982.15325
+Spacial Entropie: 0.9993300420138032
+Temporal Entropie: 0.9945
+Rule 59 has:
+Distance: 979.79525
+Spacial Entropie: 0.9990134162876733
+Temporal Entropie: 0.9895
+Rule 67 has:
+Distance: 656.67225
+Spacial Entropie: 0.9772493954814472
+Temporal Entropie: 0.9995
+Rule 83 has:
+Distance: 663.24975
+Spacial Entropie: 0.9657432709081634
+Temporal Entropie: 1.0
+Rule 87 has:
+Distance: 967.46575
+Spacial Entropie: 0.9821830424781074
+Temporal Entropie: 0.998
+Rule 99 has:
+Distance: 663.98275
+Spacial Entropie: 0.9183817817879493
+Temporal Entropie: 0.9995
+Rule 103 has:
+Distance: 768.83475
+Spacial Entropie: 0.9681183579975883
+Temporal Entropie: 0.9985
+Rule 114 has:
+Distance: 982.05025
+Spacial Entropie: 0.9993176326319935
+Temporal Entropie: 1.0
+Rule 115 has:
+Distance: 979.59675
+Spacial Entropie: 0.998965344106832
+Temporal Entropie: 1.0
+Rule 119 has:
+Distance: 969.97225
+Spacial Entropie: 0.9804768960685973
+Temporal Entropie: 0.9945
+Rule 131 has:
+Distance: 660.73825
+Spacial Entropie: 0.9448755307107056
+Temporal Entropie: 0.9995
+Rule 147 has:
+Distance: 709.64575
+Spacial Entropie: 0.9955555749690254
+Temporal Entropie: 1.0
+Rule 163 has:
+Distance: 661.35075
+Spacial Entropie: 0.9174288043290711
+Temporal Entropie: 0.9995
+Rule 178 has:
+Distance: 984.79875
+Spacial Entropie: 0.999327277117316
+Temporal Entropie: 1.0
+Rule 179 has:
+Distance: 984.80125
+Spacial Entropie: 0.9994168257398909
+Temporal Entropie: 1.0
+Rule 186 has:
+Distance: 981.00975
+Spacial Entropie: 0.998997220752557
+Temporal Entropie: 0.9935
+Rule 187 has:
+Distance: 979.73375
+Spacial Entropie: 0.9984170703414401
+Temporal Entropie: 0.9895
+Rule 227 has:
+Distance: 665.84125
+Spacial Entropie: 0.9192008663737994
+Temporal Entropie: 0.9995
+Rule 242 has:
+Distance: 981.14825
+Spacial Entropie: 0.9990324812549402
+Temporal Entropie: 1.0
+Rule 243 has:
+Distance: 979.59675
+Spacial Entropie: 0.9983716672664554
+Temporal Entropie: 1.0
