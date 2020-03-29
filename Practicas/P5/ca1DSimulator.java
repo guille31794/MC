@@ -62,6 +62,35 @@ public class ca1DSimulator implements Runnable
             caMutated[0][i] = (int)Math.floor(caDouble[i] * k);
     }
 
+    public static void setCA(int[] ar, int k_, int r_, boolean bc, int adr, int g, int nt) 
+    {
+        k = k_;
+        r = r_;
+        gen = g;
+        caMutated = new int[gen + 1][ar.length];
+        caMutated[0] = ar;
+        rulesTable = new int[(int) Math.pow(k, (2 * r) + 1)];
+        boundCondition = bc;
+        nThreads = nt;
+        reUse = () -> createBarrier();
+        barrier = new CyclicBarrier(nThreads, reUse);
+
+        int cont = 0;
+
+        for (int i = rulesTable.length - 1; i >= 0; adr /= k, --i) 
+        {
+            ++cont;
+            rulesTable[i] = adr % k;
+        }
+
+        for (int i = rulesTable.length - 1; i >= 0; --cont, --i) 
+        {
+            int aux = rulesTable[i];
+            rulesTable[i] = rulesTable[rulesTable.length - cont];
+            rulesTable[rulesTable.length - cont] = aux;
+        }
+    }
+
     // Creación de hebras
     public ca1DSimulator(int s, int e)
     {

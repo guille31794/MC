@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /*
  * @author Guillermo Girón García 
  * Clase que implementa un conversor 
@@ -15,14 +17,37 @@
         cells = automaton;
     }
 
-    public void Conversion()
+    public BinaryConverter(String automaton)
+    {
+        cells = null;
+        toTransform = automaton.chars().toArray();
+        ArrayList<Integer> al = new ArrayList<Integer>();
+        
+        for(int i = 0; i < toTransform.length; ++i)
+            for(int j = 0; j < Integer.toBinaryString(toTransform[i]).length(); ++j)
+                al.add(Integer.toBinaryString(toTransform[i]).charAt(j) - '0');
+
+        Integer[] ar = new Integer[al.size()];
+        ar = al.toArray(ar); 
+        transformed = new int[ar.length];
+
+        for(int i = 0; i < ar.length; ++i)
+            transformed[i] = ar[i];
+    }
+
+    public void XOR()
     {
         for (int i = 0; i < toTransform.length; ++i) 
             transformed[i] = toTransform[i] ^ cells[i];
     }
-    
+
     public String toString()
     {
         return transformed.toString();
+    }
+
+    public int[] automaton()
+    {
+        return transformed;
     }
  }
