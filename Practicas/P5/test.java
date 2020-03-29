@@ -32,5 +32,8 @@ public class test
         //String s2 = new String(v);
         
         System.out.println(v.toString());
+
+        //String s = "W49QS8M6ugTd5Scn3rQuqLGm4CXbz98N7YY44ZJeZcNTpA6psuS9r8WLe44vER37gf2HkqBd76a236V54yY9LEuq6rb78cC68pHJ6rKbn9y4r74qWf4TS5TaF8Uv7Kp32Ft7Z8Wcw6r28sG7iTv4Rd";
+        //System.out.println(s.length());
     }
 }

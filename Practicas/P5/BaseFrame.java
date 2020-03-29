@@ -9,6 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.w3c.dom.Text;
+
 import java.util.concurrent.*;
 
 /**
@@ -256,11 +259,20 @@ public class BaseFrame extends javax.swing.JFrame
 
     private void CipherButtonActionPerformed(java.awt.event.ActionEvent evt) 
     {//GEN-FIRST:event_CipherButtonActionPerformed
+        // Key :
+        // W49QS8M6ugTd5Scn3rQuqLGm4CXbz98N7YY44ZJeZcNTpA6psuS9r8WLe44vER37gf2HkqBd76a236V54yY9LEuq6rb78cC68pHJ6rKbn9y4r74qWf4TS5TaF8Uv7Kp32Ft7Z8Wcw6r28sG7iTv4Rd
+
         bc = new BinaryConverter(KeyText.getText());
-        int nThreads = Runtime.getRuntime().availableProcessors(),
-        start = 0, frame = bc.automaton().length / nThreads, end = frame;
+        int nThreads = Runtime.getRuntime().availableProcessors();
+
+        if(TextToCipher.getText().length() < nThreads)
+            nThreads = TextToCipher.getText().length() / 4;
+        else if(TextToCipher.getText().length() == 1)
+            nThreads = 1;
+        
+        int start = 0, frame = bc.automaton().length / nThreads, end = frame;
         tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(nThreads);
-        ca1DSimulator.setCA(bc.automaton(), 2, 1, false, 55, 1000, nThreads);
+        ca1DSimulator.setCA(bc.automaton(), 2, 1, false, 55, TextToCipher.getText().length(), nThreads);
 
         for(int i = 0; i < nThreads; ++i)
         {
@@ -272,25 +284,21 @@ public class BaseFrame extends javax.swing.JFrame
         tpe.shutdown();
         try
         {
-            if(!tpe.awaitTermination(5, TimeUnit.SECONDS))
+            if(!tpe.awaitTermination(10, TimeUnit.SECONDS))
                 tpe.shutdownNow();
         } catch(InterruptedException e) {}
 
         int[][] autoStatus = ca1DSimulator.status();
-        
+        int[] midCellStatus = new int[autoStatus.length];
+
         for(int i = 0; i < autoStatus.length; ++i)
-        {
-            for (int j = 0; j < autoStatus[i].length; ++j)
-                //CipheredText.setText(CipheredText.getText() + Integer.toString(autoStatus[i][j] ));
-                System.out.print(autoStatus[i][j]);
-            
-            CipheredText.setText(CipheredText.getText() + " ");
-        }
+            for(int j = 0; j < autoStatus[i].length; ++j)
+                midCellStatus[i] = autoStatus[i][499];
 
-        /*int[] v = bc.automaton();
-
-        for(int i : v)
-            CipheredText.setText(CipheredText.getText() + Integer.toString(i));*/
+        bc = new BinaryConverter(TextToCipher.getText(), midCellStatus);
+        bc.XOR();
+        
+        CipheredText.setText(bc.toString());
             
     }//GEN-LAST:event_CipherButtonActionPerformed
 

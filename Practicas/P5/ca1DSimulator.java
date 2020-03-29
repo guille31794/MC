@@ -67,7 +67,7 @@ public class ca1DSimulator implements Runnable
         k = k_;
         r = r_;
         gen = g;
-        caMutated = new int[gen + 1][ar.length];
+        caMutated = new int[gen][ar.length];
         caMutated[0] = ar;
         rulesTable = new int[(int) Math.pow(k, (2 * r) + 1)];
         boundCondition = bc;
@@ -95,7 +95,7 @@ public class ca1DSimulator implements Runnable
     public ca1DSimulator(int s, int e)
     {
         prevGen = 0;
-        currentGen = 1;
+        currentGen = 0;
         start = s;
         end = e;
     }
