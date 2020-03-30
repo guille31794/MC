@@ -43,7 +43,11 @@ import java.util.ArrayList;
 
     public String toString()
     {
-        return transformed.toString();
+        String s = "";
+        for(int i : transformed)
+            s += (char)i;
+        
+        return s;
     }
 
     public int[] automaton()
