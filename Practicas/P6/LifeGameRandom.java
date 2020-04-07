@@ -1,17 +1,18 @@
 /*
 * @author Guillermo Girón García
-* Clase que implementa el juego de la vida
+* Clase que implementa la 
+* inicialización aleatoria del juego de la vida
 */
 
 import java.util.Random;
 
-public class LifeGame implements Runnable
+public class LifeGameRandom implements Runnable
 {
     private int start, end, option;
     private chessBoard board;
     private Random r;
 
-    public LifeGame(int s, int e, chessBoard c, int option)
+    public LifeGameRandom(int s, int e, chessBoard c)
     {
         start = s;
         end = e;

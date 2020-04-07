@@ -66,7 +66,6 @@ public class BaseFrame extends javax.swing.JFrame {
         SimulationPanel.setMaximumSize(new java.awt.Dimension(800, 800));
         SimulationPanel.setMinimumSize(new java.awt.Dimension(200, 200));
         SimulationPanel.setPreferredSize(new java.awt.Dimension(800, 800));
-        //SimulationPanel.setBackground(Color.BLACK);
 
         javax.swing.GroupLayout SimulationPanelLayout = new javax.swing.GroupLayout(SimulationPanel);
         SimulationPanel.setLayout(SimulationPanelLayout);
@@ -290,8 +289,8 @@ public class BaseFrame extends javax.swing.JFrame {
     private void RunButtonActionPerformed(java.awt.event.ActionEvent evt) 
     {   
         int dim = Integer.parseInt(DimensionText.getText());
-        dim = dim < 200 ? 200 : dim;
-        dim = dim > 800 ? 800 : dim;
+        //dim = dim < 200 ? 200 : dim;
+        //dim = dim > 800 ? 800 : dim;
 
         int mode = 0;
 
@@ -303,20 +302,38 @@ public class BaseFrame extends javax.swing.JFrame {
         int nThreads = Runtime.getRuntime().availableProcessors(),
         frame = board.getLength() / nThreads, 
         start = 0, 
-        end = frame,
+        end = frame;
         boundCondition = GeneratorMenu.getSelectedIndex();
 
         tpe = (ThreadPoolExecutor)Executors.newFixedThreadPool(nThreads);
 
-        for(int i = 0; i < nThreads; ++i)
+        if(islandFlag)
         {
-            tpe.execute(new LifeGame(start, end, board, boundCondition));
-            start = end;
-            end += frame;
+            for(int i = 0; i < nThreads; ++i)
+            {
+                tpe.execute(new LifeGameIsland(start, end, board, mode));
+                start = end;
+                end += frame;
+            }
+
+            tpe.execute(new LifeGameIsland(start, board.getLength(), board, mode));
         }
+        else if(cannonFlag)
+        {
+            
+        }
+        else
+        {
+            for (int i = 0; i < nThreads; ++i) 
+            {
+                tpe.execute(new LifeGameRandom(start, end, board));
+                start = end;
+                end += frame;
+            }
 
-        tpe.execute(new LifeGame(start, board.getLength(), board, boundCondition));
-
+            tpe.execute(new LifeGameRandom(start, board.getLength(), board));
+        }
+        
         tpe.shutdown();
         try 
         {
@@ -327,9 +344,16 @@ public class BaseFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
         
-        
+        /*for(int i = 0; i < board.getLength(); ++i)
+        {
+            for (int j = 0; j < board.getLength(); ++j)
+                System.out.print(board.board[i][j] + " ");
+
+            System.out.println();
+        }*/
+            
+
         SimulationPanel.add(board);
-        //SimulationPanel.repaint();
         board.repaint();
 
         StopButton.setEnabled(true);
@@ -450,7 +474,7 @@ public class BaseFrame extends javax.swing.JFrame {
     private javax.swing.JSlider SpeedSlider;
     private javax.swing.JButton StopButton;
     private ThreadPoolExecutor tpe;
-    private int generations, config;
+    private int generations, config, boundCondition;
     private randomGenerator rg;
     private boolean islandFlag, cannonFlag;
     private chessBoard board;
