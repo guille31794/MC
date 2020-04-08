@@ -289,8 +289,8 @@ public class BaseFrame extends javax.swing.JFrame {
     private void RunButtonActionPerformed(java.awt.event.ActionEvent evt) 
     {   
         int dim = Integer.parseInt(DimensionText.getText());
-        //dim = dim < 200 ? 200 : dim;
-        //dim = dim > 800 ? 800 : dim;
+        dim = dim < 200 ? 200 : dim;
+        dim = dim > 800 ? 800 : dim;
 
         int mode = 0;
 
@@ -308,31 +308,11 @@ public class BaseFrame extends javax.swing.JFrame {
         tpe = (ThreadPoolExecutor)Executors.newFixedThreadPool(nThreads);
 
         if(islandFlag)
-        {
-            for(int i = 0; i < nThreads; ++i)
-            {
-                tpe.execute(new LifeGameIsland(start, end, board, mode));
-                start = end;
-                end += frame;
-            }
-
-            tpe.execute(new LifeGameIsland(start, board.getLength(), board, mode));
-        }
+            IslandInit(start, end, frame, nThreads);
         else if(cannonFlag)
-        {
-            
-        }
+            CannonInit(start, end, frame, nThreads);
         else
-        {
-            for (int i = 0; i < nThreads; ++i) 
-            {
-                tpe.execute(new LifeGameRandom(start, end, board));
-                start = end;
-                end += frame;
-            }
-
-            tpe.execute(new LifeGameRandom(start, board.getLength(), board));
-        }
+            RandomInit(start, end, frame, nThreads);
         
         tpe.shutdown();
         try 
@@ -445,6 +425,48 @@ public class BaseFrame extends javax.swing.JFrame {
                 new BaseFrame().setVisible(true);
             }
         });
+    }
+
+    private void RandomInit(int start, int end, int frame, int nThreads)
+    {
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new LifeGameRandom(start, end, board));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new LifeGameRandom(start, board.getLength(), board));
+    }
+
+    private void IslandInit(int start, int end, int frame, int nThreads)
+    {
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new LifeGameIsland(start, end, board, mode));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new LifeGameIsland(start, board.getLength(), board, mode));
+    }
+
+    private void CannonInit()
+    {
+        if(mode < nThreads)
+            nThreads = mode;
+
+        int frameCannon = mode / nThreads;
+
+
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new LifeGameCannon(start, end, board, frameCannon));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new LifeGameCannon(start, board.getLength(), board, frameCannon));
     }
 
     // Variables declaration - do not modify
