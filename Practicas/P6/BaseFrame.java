@@ -308,9 +308,9 @@ public class BaseFrame extends javax.swing.JFrame {
         tpe = (ThreadPoolExecutor)Executors.newFixedThreadPool(nThreads);
 
         if(islandFlag)
-            IslandInit(start, end, frame, nThreads);
+            IslandInit(start, end, frame, nThreads, mode);
         else if(cannonFlag)
-            CannonInit(start, end, frame, nThreads);
+            CannonInit(start, end, frame, nThreads, mode);
         else
             RandomInit(start, end, frame, nThreads);
         
@@ -335,7 +335,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
         SimulationPanel.add(board);
         board.repaint();
-
+        PopulationText.setText(String.valueOf(board.getPopulation()));
         StopButton.setEnabled(true);
         NextButton.setEnabled(true);
         PauseButton.setEnabled(true);
@@ -390,7 +390,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
     private void SpeedSliderStateChanged(javax.swing.event.ChangeEvent evt) {
         // TODO add your handling code here:
-    }//GEN-LAST:event_SpeedSliderStateChanged
+    }
 
     /**
      * @param args the command line arguments
@@ -417,9 +417,7 @@ public class BaseFrame extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(BaseFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new BaseFrame().setVisible(true);
@@ -439,7 +437,7 @@ public class BaseFrame extends javax.swing.JFrame {
         tpe.execute(new LifeGameRandom(start, board.getLength(), board));
     }
 
-    private void IslandInit(int start, int end, int frame, int nThreads)
+    private void IslandInit(int start, int end, int frame, int nThreads, int mode)
     {
         for (int i = 0; i < nThreads; ++i) 
         {
@@ -451,7 +449,7 @@ public class BaseFrame extends javax.swing.JFrame {
         tpe.execute(new LifeGameIsland(start, board.getLength(), board, mode));
     }
 
-    private void CannonInit()
+    private void CannonInit(int start, int end, int frame, int nThreads, int mode)
     {
         if(mode < nThreads)
             nThreads = mode;

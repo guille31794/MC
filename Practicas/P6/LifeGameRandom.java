@@ -25,6 +25,9 @@ public class LifeGameRandom implements Runnable
     {
         for(int i = start; i < end; ++i)
             for(int j = 0; j < board.getLength(); ++j)
+            {
                 board.board[i][j] = r.nextInt(2);
+                board.incrementPopulation();
+            }
     }
 }

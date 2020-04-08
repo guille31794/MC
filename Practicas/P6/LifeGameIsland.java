@@ -73,6 +73,9 @@ public class LifeGameIsland implements Runnable
         for(int i = 0; i < islands[f].length && x + i < board.getLength(); ++i)
             for(int j = 0; j < islands[f].length && y + j < board.getLength(); ++j)
                 if(board.board[i][j] != 1)
-                    board.board[x+i][y+j] = islands[f][i][j];
+                {
+                    board.board[x + i][y + j] = islands[f][i][j];
+                    board.incrementPopulation();
+                }
     }
 }

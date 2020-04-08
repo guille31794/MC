@@ -13,10 +13,12 @@ public class chessBoard extends JPanel
      */
     private static final long serialVersionUID = 1L;
     public int[][] board;
+    private int population;
 
     public chessBoard(int d)
     {
         board = new int[d][d];
+        population = 0;
         setSize(board.length, board.length);
         setVisible(true);
         setBounds(0, 0, board.length, board.length);
@@ -27,6 +29,16 @@ public class chessBoard extends JPanel
         return board.length;
     }
 
+    public int getPopulation()
+    {
+        return population;
+    }
+
+    public void incrementPopulation()
+    {
+        ++population;
+    }
+
     @Override
     public void paintComponent(Graphics g)
     {
@@ -34,10 +46,7 @@ public class chessBoard extends JPanel
         setBackground(Color.BLACK);
         
         Graphics2D g2d = (Graphics2D)g;
-
-        g2d.setBackground(Color.BLACK);
         
-
         for(int i = 0; i < board.length; ++i)
             for(int j = 0; j < board.length; ++j)
                 if(board[i][j] == 1)

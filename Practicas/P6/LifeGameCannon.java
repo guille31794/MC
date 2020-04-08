@@ -15,22 +15,22 @@ public class LifeGameCannon implements Runnable
     private final int[][][] figures = 
     {
         {
-            {0, 0, 0, 0, 1},
-            {0, 1, 1, 1, 1},
-            {1, 1, 1, 1, 0},
-            {1, 0, 0, 1, 0},
-            {1, 1, 1, 1, 0},
-            {0, 1, 1, 1, 1},
-            {0, 0, 0, 0, 1}
+            {0, 0, 0, 0, 2},
+            {0, 2, 2, 2, 2},
+            {2, 2, 2, 2, 0},
+            {2, 0, 0, 2, 0},
+            {2, 2, 2, 2, 0},
+            {0, 2, 2, 2, 2},
+            {0, 0, 0, 0, 2}
         },
         {
-            {1, 1, 0, 0, 0},
-            {1, 0, 1, 0, 0},
-            {0, 1, 1, 1, 0},
-            {0, 0, 1, 1, 1},
-            {0, 1, 1, 1, 0},
-            {1, 0, 1, 0, 0},
-            {1, 1, 0, 0, 0}
+            {2, 2, 0, 0, 0},
+            {2, 0, 2, 0, 0},
+            {0, 2, 2, 2, 0},
+            {0, 0, 2, 2, 2},
+            {0, 2, 2, 2, 0},
+            {2, 0, 2, 0, 0},
+            {2, 2, 0, 0, 0}
         }
     };
 
@@ -61,6 +61,6 @@ public class LifeGameCannon implements Runnable
         for(int i = 0; i < figures[f].length && x + i < board.getLength(); ++i)
             for(int j = 0; j < figures[f][i].length && y + j < board.getLength(); ++j)
                 if(board.board[i][j] != 2)
-                    board.board[x+i][y+j] = figures[f][i][j] + 1;
+                    board.board[x+i][y+j] = figures[f][i][j];
     }
 }
