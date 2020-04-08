@@ -95,7 +95,7 @@ public class BaseFrame extends JFrame
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Simulation parameters");
         setLocation(sf.getX() + sf.getWidth() + 10, sf.getY());
-        setLayout(new GridLayout(2,1));
+        setLayout(new GridLayout(1,1));
         densityWindow.setVisible(true);
         densityWindow.setDefaultCloseOperation(EXIT_ON_CLOSE);
         densityWindow.setLocation(sf.getX(), sf.getY() + sf.getHeight());

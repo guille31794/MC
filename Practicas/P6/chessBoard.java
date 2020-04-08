@@ -39,6 +39,11 @@ public class chessBoard extends JPanel
         ++population;
     }
 
+    public void resetPopulation()
+    {
+        population = 0;
+    }
+
     @Override
     public void paintComponent(Graphics g)
     {

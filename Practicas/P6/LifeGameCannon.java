@@ -61,6 +61,7 @@ public class LifeGameCannon implements Runnable
         for(int i = 0; i < figures[f].length && x + i < board.getLength(); ++i)
             for(int j = 0; j < figures[f][i].length && y + j < board.getLength(); ++j)
                 if(board.board[i][j] != 2)
+                    // Incrementar poblacion
                     board.board[x+i][y+j] = figures[f][i][j];
     }
 }

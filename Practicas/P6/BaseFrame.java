@@ -30,7 +30,7 @@ public class BaseFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        speed = 500L;
         ConfigOptionMenu = new javax.swing.ButtonGroup();
         SimulationPanel = new javax.swing.JPanel();
         DimensionLabel = new javax.swing.JLabel();
@@ -299,6 +299,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
         board = new chessBoard(dim);
         generations = Integer.parseInt(GenerationText.getText());
+        currentGen = 0;
         int nThreads = Runtime.getRuntime().availableProcessors(),
         frame = board.getLength() / nThreads, 
         start = 0, 
@@ -332,13 +333,15 @@ public class BaseFrame extends javax.swing.JFrame {
             System.out.println();
         }*/
             
-
         SimulationPanel.add(board);
         board.repaint();
         PopulationText.setText(String.valueOf(board.getPopulation()));
         StopButton.setEnabled(true);
         NextButton.setEnabled(true);
         PauseButton.setEnabled(true);
+        ConfigOptionMenu.setEnabled(false);
+        // Posible ejecutor de un unico hilo
+        caCompute();
     }
 
     private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) 
@@ -350,6 +353,7 @@ public class BaseFrame extends javax.swing.JFrame {
         StopButton.setEnabled(false);
         NextButton.setEnabled(false);
         PauseButton.setEnabled(false);
+        ConfigOptionMenu.setEnabled(true);
         SimulationPanel.remove(board);
         SimulationPanel.repaint();
     }
@@ -388,8 +392,99 @@ public class BaseFrame extends javax.swing.JFrame {
         cannonFlag = true;
     }
 
-    private void SpeedSliderStateChanged(javax.swing.event.ChangeEvent evt) {
-        // TODO add your handling code here:
+    private void SpeedSliderStateChanged(javax.swing.event.ChangeEvent evt) 
+    {
+        switch(SpeedSlider.getValue())
+        {
+            case 0: speed = 500L;
+                break;
+            case 1: speed = 150L;
+                break;
+            case 2: speed = 10L;
+                break;
+        }    
+    }
+
+    private void RandomInit(int start, int end, int frame, int nThreads) 
+    {
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new LifeGameRandom(start, end, board));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new LifeGameRandom(start, board.getLength(), board));
+    }
+
+    private void IslandInit(int start, int end, int frame, int nThreads, int mode) 
+    {
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new LifeGameIsland(start, end, board, mode));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new LifeGameIsland(start, board.getLength(), board, mode));
+    }
+
+    private void CannonInit(int start, int end, int frame, int nThreads, int mode) 
+    {
+        if (mode < nThreads)
+            nThreads = mode;
+
+        int frameCannon = mode / nThreads;
+
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new LifeGameCannon(start, end, board, frameCannon));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new LifeGameCannon(start, board.getLength(), board, frameCannon));
+    }
+
+    private void caCompute()
+    {
+        while(currentGen < generations)
+        {
+            int nThreads = Runtime.getRuntime().availableProcessors(), 
+            frame = board.getLength() / nThreads, 
+            start = 0,
+            end = frame;
+
+            if(!cannonFlag)
+                nextGenRandom_Island(start, end, frame, nThreads);
+            else
+                nextGenCannon();
+
+            ++currentGen;
+
+            try{    wait(speed);    }
+            catch(InterruptedException ex)
+            {   ex.printStackTrace();   }
+        }
+    }
+
+    private void nextGenRandom_Island(int start, int end, int frame, int nThreads)
+    {
+        tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(nThreads);
+
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new NextGenRandom_Island(start, end, board));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new NextGenRandom_Island(start, board.getLength(), board));
+    }
+
+    private void nextGenCannon()
+    {
+        
     }
 
     /**
@@ -425,48 +520,6 @@ public class BaseFrame extends javax.swing.JFrame {
         });
     }
 
-    private void RandomInit(int start, int end, int frame, int nThreads)
-    {
-        for (int i = 0; i < nThreads; ++i) 
-        {
-            tpe.execute(new LifeGameRandom(start, end, board));
-            start = end;
-            end += frame;
-        }
-
-        tpe.execute(new LifeGameRandom(start, board.getLength(), board));
-    }
-
-    private void IslandInit(int start, int end, int frame, int nThreads, int mode)
-    {
-        for (int i = 0; i < nThreads; ++i) 
-        {
-            tpe.execute(new LifeGameIsland(start, end, board, mode));
-            start = end;
-            end += frame;
-        }
-
-        tpe.execute(new LifeGameIsland(start, board.getLength(), board, mode));
-    }
-
-    private void CannonInit(int start, int end, int frame, int nThreads, int mode)
-    {
-        if(mode < nThreads)
-            nThreads = mode;
-
-        int frameCannon = mode / nThreads;
-
-
-        for (int i = 0; i < nThreads; ++i) 
-        {
-            tpe.execute(new LifeGameCannon(start, end, board, frameCannon));
-            start = end;
-            end += frame;
-        }
-
-        tpe.execute(new LifeGameCannon(start, board.getLength(), board, frameCannon));
-    }
-
     // Variables declaration - do not modify
     private javax.swing.JRadioButton CannonConfig;
     private javax.swing.JLabel ConfigLabel;
@@ -494,7 +547,9 @@ public class BaseFrame extends javax.swing.JFrame {
     private javax.swing.JSlider SpeedSlider;
     private javax.swing.JButton StopButton;
     private ThreadPoolExecutor tpe;
-    private int generations, config, boundCondition;
+    private int generations, config, boundCondition,
+    currentGen;
+    private long speed;
     private randomGenerator rg;
     private boolean islandFlag, cannonFlag;
     private chessBoard board;
