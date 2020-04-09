@@ -4,6 +4,8 @@
 */
 
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.swing.JPanel;
 
 public class chessBoard extends JPanel
@@ -13,12 +15,12 @@ public class chessBoard extends JPanel
      */
     private static final long serialVersionUID = 1L;
     public int[][] board;
-    private int population;
+    private AtomicInteger population;
 
     public chessBoard(int d)
     {
         board = new int[d][d];
-        population = 0;
+        population = new AtomicInteger(0);
         setSize(board.length, board.length);
         setVisible(true);
         setBounds(0, 0, board.length, board.length);
@@ -31,17 +33,17 @@ public class chessBoard extends JPanel
 
     public int getPopulation()
     {
-        return population;
+        return population.get();
     }
 
     public void incrementPopulation()
     {
-        ++population;
+        population.incrementAndGet();
     }
 
     public void resetPopulation()
     {
-        population = 0;
+        population.set(0);
     }
 
     @Override

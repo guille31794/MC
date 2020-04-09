@@ -61,5 +61,8 @@ public class NextGenRandom_Island implements Runnable
         }
         else if(alive == 3)
             board.board[x][y] = 1;
+
+        if(board.board[x][y] == 1)
+            board.incrementPopulation();
     }
 }

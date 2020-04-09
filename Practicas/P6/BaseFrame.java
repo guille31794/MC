@@ -334,12 +334,12 @@ public class BaseFrame extends javax.swing.JFrame {
         board.repaint();
         PopulationText.setText(String.valueOf(board.getPopulation()));
         StopButton.setEnabled(true);
-        NextButton.setEnabled(true);
         PauseButton.setEnabled(true);
         RandomConfig.setEnabled(false);
         IslandConfig.setEnabled(false);
         CannonConfig.setEnabled(false);
         ConfigText.setEnabled(false);
+        RunButton.setEnabled(false);
         
         paused = false;
         exe = new ThreadPoolExecutor(1, 1, 1, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(2));
@@ -367,12 +367,16 @@ public class BaseFrame extends javax.swing.JFrame {
         IslandConfig.setEnabled(true);
         CannonConfig.setEnabled(true);
         ConfigText.setEnabled(true);
+        RunButton.setEnabled(true);
         SimulationPanel.remove(board);
         SimulationPanel.repaint();
     }
 
-    private void NextButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+    private void NextButtonActionPerformed(java.awt.event.ActionEvent evt) 
+    {
+        lock.lock();
+        unpaused.signal();
+        lock.unlock();
     }
 
     private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) 
@@ -390,7 +394,8 @@ public class BaseFrame extends javax.swing.JFrame {
             unpaused.signal();
             lock.unlock();
         }
-            
+
+        NextButton.setEnabled(true);    
     }
 
     private void RandomConfigActionPerformed(java.awt.event.ActionEvent evt) 
@@ -427,7 +432,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 break;
             case 1: speed = 150L;
                 break;
-            case 2: speed = 10L;
+            case 2: speed = 35L;
                 break;
         }    
     }
@@ -489,7 +494,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 lock.unlock();
             }
                 
-
+            board.resetPopulation();
             start = 0;
             end = frame;
 
@@ -510,6 +515,8 @@ public class BaseFrame extends javax.swing.JFrame {
                 ex.printStackTrace();
             }
         }
+
+        NextButton.setEnabled(false);
     }
 
     private void nextGenRandom_Island(int start, int end, int frame, int nThreads)
@@ -536,6 +543,7 @@ public class BaseFrame extends javax.swing.JFrame {
         }
 
         board.repaint();
+        PopulationText.setText(String.valueOf(board.getPopulation()));
     }
 
     private void nextGenCannon()
