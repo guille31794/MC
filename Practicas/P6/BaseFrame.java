@@ -7,6 +7,9 @@ import java.awt.Color;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class BaseFrame extends javax.swing.JFrame {
 
@@ -31,6 +34,8 @@ public class BaseFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         speed = 500L;
+        lock = new ReentrantLock();
+        unpaused = lock.newCondition();
         ConfigOptionMenu = new javax.swing.ButtonGroup();
         SimulationPanel = new javax.swing.JPanel();
         DimensionLabel = new javax.swing.JLabel();
@@ -85,7 +90,7 @@ public class BaseFrame extends javax.swing.JFrame {
         ConfigLabel.setVisible(false);
         ConfigText.setVisible(false);
 
-        GeneratorMenu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Von Newman", "Moore"}));
+        GeneratorMenu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Moore", "Von Newman"}));
 
         GenerationLabel.setText("Generations:");
 
@@ -304,7 +309,7 @@ public class BaseFrame extends javax.swing.JFrame {
         frame = board.getLength() / nThreads, 
         start = 0, 
         end = frame;
-        boundCondition = GeneratorMenu.getSelectedIndex();
+        neightborCondition = GeneratorMenu.getSelectedIndex();
 
         tpe = (ThreadPoolExecutor)Executors.newFixedThreadPool(nThreads);
 
@@ -324,14 +329,6 @@ public class BaseFrame extends javax.swing.JFrame {
         {
             e.printStackTrace();
         }
-        
-        /*for(int i = 0; i < board.getLength(); ++i)
-        {
-            for (int j = 0; j < board.getLength(); ++j)
-                System.out.print(board.board[i][j] + " ");
-
-            System.out.println();
-        }*/
             
         SimulationPanel.add(board);
         board.repaint();
@@ -339,9 +336,22 @@ public class BaseFrame extends javax.swing.JFrame {
         StopButton.setEnabled(true);
         NextButton.setEnabled(true);
         PauseButton.setEnabled(true);
-        ConfigOptionMenu.setEnabled(false);
-        // Posible ejecutor de un unico hilo
-        caCompute();
+        RandomConfig.setEnabled(false);
+        IslandConfig.setEnabled(false);
+        CannonConfig.setEnabled(false);
+        ConfigText.setEnabled(false);
+        
+        paused = false;
+        exe = new ThreadPoolExecutor(1, 1, 1, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(2));
+        exe.execute(new Runnable()
+        {
+            @Override
+            public void run() 
+            {
+                caCompute();
+            }
+        });
+        exe.shutdown();
     }
 
     private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) 
@@ -353,7 +363,10 @@ public class BaseFrame extends javax.swing.JFrame {
         StopButton.setEnabled(false);
         NextButton.setEnabled(false);
         PauseButton.setEnabled(false);
-        ConfigOptionMenu.setEnabled(true);
+        RandomConfig.setEnabled(true);
+        IslandConfig.setEnabled(true);
+        CannonConfig.setEnabled(true);
+        ConfigText.setEnabled(true);
         SimulationPanel.remove(board);
         SimulationPanel.repaint();
     }
@@ -362,8 +375,22 @@ public class BaseFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
-    private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+    private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) 
+    {
+        if(!paused)
+        {
+            paused = true;
+            PauseButton.setText("Resume");
+        }
+        else
+        {
+            PauseButton.setText("Pause");
+            paused = false;
+            lock.lock();
+            unpaused.signal();
+            lock.unlock();
+        }
+            
     }
 
     private void RandomConfigActionPerformed(java.awt.event.ActionEvent evt) 
@@ -448,11 +475,22 @@ public class BaseFrame extends javax.swing.JFrame {
 
     private void caCompute()
     {
+        int nThreads = Runtime.getRuntime().availableProcessors(), 
+        frame = board.getLength() / nThreads, start, end;
+
         while(currentGen < generations)
         {
-            int nThreads = Runtime.getRuntime().availableProcessors(), 
-            frame = board.getLength() / nThreads, 
-            start = 0,
+            if(paused)
+            {
+                lock.lock();
+                try {   unpaused.await();   }
+                catch(InterruptedException e)
+                {   e.printStackTrace();    }
+                lock.unlock();
+            }
+                
+
+            start = 0;
             end = frame;
 
             if(!cannonFlag)
@@ -462,9 +500,15 @@ public class BaseFrame extends javax.swing.JFrame {
 
             ++currentGen;
 
-            try{    wait(speed);    }
-            catch(InterruptedException ex)
-            {   ex.printStackTrace();   }
+            FrameText.setText(String.valueOf(currentGen));
+            
+            try 
+            {
+                Thread.sleep(speed);
+            } catch (InterruptedException ex) 
+            {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -474,12 +518,24 @@ public class BaseFrame extends javax.swing.JFrame {
 
         for (int i = 0; i < nThreads; ++i) 
         {
-            tpe.execute(new NextGenRandom_Island(start, end, board));
+            tpe.execute(new NextGenRandom_Island(start, end, board, neightborCondition));
             start = end;
             end += frame;
         }
 
-        tpe.execute(new NextGenRandom_Island(start, board.getLength(), board));
+        tpe.execute(new NextGenRandom_Island(start, board.getLength(), board, neightborCondition));
+        tpe.shutdown();
+
+        try 
+        {
+            if (!tpe.awaitTermination(10, TimeUnit.SECONDS))
+                tpe.shutdownNow();
+        } catch (InterruptedException e) 
+        {
+            e.printStackTrace();
+        }
+
+        board.repaint();
     }
 
     private void nextGenCannon()
@@ -546,11 +602,13 @@ public class BaseFrame extends javax.swing.JFrame {
     private javax.swing.JLabel SlowLabel;
     private javax.swing.JSlider SpeedSlider;
     private javax.swing.JButton StopButton;
-    private ThreadPoolExecutor tpe;
-    private int generations, config, boundCondition,
+    private ThreadPoolExecutor tpe, exe;
+    private int generations, config, neightborCondition,
     currentGen;
     private long speed;
-    private randomGenerator rg;
-    private boolean islandFlag, cannonFlag;
+    private boolean islandFlag, cannonFlag,
+    paused;
     private chessBoard board;
+    private ReentrantLock lock;
+    private Condition unpaused;
 }
