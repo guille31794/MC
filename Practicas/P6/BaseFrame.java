@@ -548,7 +548,64 @@ public class BaseFrame extends javax.swing.JFrame {
 
     private void nextGenCannon()
     {
-        
+        int nThreads =  Runtime.getRuntime().availableProcessors(),
+        frameCannon = board.getCannonNumber() / nThreads;
+
+        if(frameCannon == 0)
+            nThreads = board.getCannonNumber();
+
+        int start = 0, end = frameCannon;
+
+        tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(nThreads);
+
+        for(int i = 0; i < nThreads; ++i)
+        {
+            tpe.execute(new NextGenCannon(start, end, board));
+            start = end;
+            end += frameCannon;
+        }
+
+        tpe.execute(new NextGenCannon(start, board.getCannonNumber(), board));
+
+        tpe.shutdown();
+
+        try 
+        {
+            if (!tpe.awaitTermination(10, TimeUnit.SECONDS))
+                tpe.shutdownNow();
+        } catch (InterruptedException e) 
+        {
+            e.printStackTrace();
+        }
+
+        nThreads = Runtime.getRuntime().availableProcessors();
+        int frame = board.getLength() / nThreads;
+        start = 0;
+        end = frame;
+        tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(nThreads);
+
+        for(int i = 0; i < nThreads; ++i)
+        {
+            tpe.execute(new SlideGliders(start, end, board, 10));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new SlideGliders(start, board.getLength(), board, 5));
+
+        tpe.shutdown();
+
+        try 
+        {
+            if (!tpe.awaitTermination(10, TimeUnit.SECONDS))
+                tpe.shutdownNow();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        board.repaint();
+        PopulationText.setText(String.valueOf(board.getPopulation()));
     }
 
     /**

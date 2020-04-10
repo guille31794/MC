@@ -58,10 +58,14 @@ public class LifeGameCannon implements Runnable
 
     public void InsertCannon(int f, int x, int y)
     {
+        board.incrementCannonNumber();
+
         for(int i = 0; i < figures[f].length && x + i < board.getLength(); ++i)
             for(int j = 0; j < figures[f][i].length && y + j < board.getLength(); ++j)
                 if(board.board[i][j] != 2)
-                    // Incrementar poblacion
-                    board.board[x+i][y+j] = figures[f][i][j];
+                {
+                    board.board[x + i][y + j] = figures[f][i][j];
+                    board.incrementPopulation();            
+                }
     }
 }

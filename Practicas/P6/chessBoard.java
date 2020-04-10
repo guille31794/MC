@@ -16,6 +16,7 @@ public class chessBoard extends JPanel
     private static final long serialVersionUID = 1L;
     public int[][] board;
     private AtomicInteger population;
+    private int cannonNumber;
 
     public chessBoard(int d)
     {
@@ -24,6 +25,7 @@ public class chessBoard extends JPanel
         setSize(board.length, board.length);
         setVisible(true);
         setBounds(0, 0, board.length, board.length);
+        cannonNumber = 0;
     }
 
     public int getLength()
@@ -44,6 +46,16 @@ public class chessBoard extends JPanel
     public void resetPopulation()
     {
         population.set(0);
+    }
+
+    public int getCannonNumber()
+    {
+        return cannonNumber;
+    }
+
+    public void incrementCannonNumber()
+    {
+        ++cannonNumber;
     }
 
     @Override

@@ -10,7 +10,6 @@ import java.util.Random;
 public class NextGenCannon implements Runnable
 {
     private final int start, end;
-    private final boolean neightborCondition;
     private chessBoard board;
     private final Random r;
     private final int[][][] gliders =  
@@ -27,11 +26,10 @@ public class NextGenCannon implements Runnable
         }
     };
 
-    public NextGenCannon(int s, int e, chessBoard c, int n)
+    public NextGenCannon(int s, int e, chessBoard c)
     {
         start = s;
         end = e;
-        neightborCondition = n > 0 ? true : false;
         board = c;
         r = new Random();
     }
@@ -39,18 +37,21 @@ public class NextGenCannon implements Runnable
     @Override
     public void run() 
     {
+        int x = 0, y = 0, g = 0;
         for(int i = start; i < end; ++i)
-            for(int j = 0; j < board.getLength(); ++j)
-                if(board.board[i][j] == 2)
-                {
-                    shootGlider(i, j);
-                    i += 7;
-                    break;
-                }
+        {
+            x = r.nextInt(board.getLength());
+            y = r.nextInt(board.getLength());
+            g = r.nextInt(gliders.length);
+            shootGlider(g, x, y);
+        }
     }
 
-    public void shootGlider(int x, int y)
+    public void shootGlider(int g, int x, int y)
     {
-        
+        for(int i = 0; i < gliders[g].length && x + i < board.getLength(); ++i)
+            for(int j = 0; j < gliders[g].length && y + j < board.getLength(); ++j)
+                if(board.board[x+i][y+j] != 2 && board.board[x + i][y + j] != 1)
+                    board.board[x+i][y+j] = gliders[g][i][j];    
     }
 }
