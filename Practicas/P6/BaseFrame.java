@@ -287,7 +287,7 @@ public class BaseFrame extends javax.swing.JFrame {
                             .addComponent(FastLabel))))
                 .addContainerGap(223, Short.MAX_VALUE))
         );
-
+        
         pack();
     }
 
@@ -342,6 +342,12 @@ public class BaseFrame extends javax.swing.JFrame {
         RunButton.setEnabled(false);
         
         paused = false;
+
+        density = new DensityGraph(SimulationPanel.getX(), SimulationPanel.getY() + SimulationPanel.getHeight() + 25,
+                SimulationPanel.getWidth(), 100);
+        density.addGenerationDensity((int)((double)((board.getPopulation() / (board.getLength() * board.getLength()))) * 100));
+        add(density);
+
         exe = new ThreadPoolExecutor(1, 1, 1, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(2));
         exe.execute(new Runnable()
         {
@@ -356,6 +362,11 @@ public class BaseFrame extends javax.swing.JFrame {
 
     private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) 
     {
+        generations = 0;
+        
+        if(!tpe.isShutdown())
+            tpe.shutdownNow();
+        
         DimensionText.setText("");
         GenerationText.setText("");
         FrameText.setText("0");
@@ -370,6 +381,7 @@ public class BaseFrame extends javax.swing.JFrame {
         RunButton.setEnabled(true);
         SimulationPanel.remove(board);
         SimulationPanel.repaint();
+        this.remove(density);
     }
 
     private void NextButtonActionPerformed(java.awt.event.ActionEvent evt) 
@@ -503,8 +515,12 @@ public class BaseFrame extends javax.swing.JFrame {
             else
                 nextGenCannon();
 
+            board.repaint();
+            density.addGenerationDensity(
+                    (int) ((double) board.getPopulation() / (board.getLength() * board.getLength()) * 100.0));
+            density.repaint();
+            PopulationText.setText(String.valueOf(board.getPopulation()));
             ++currentGen;
-
             FrameText.setText(String.valueOf(currentGen));
             
             try 
@@ -541,15 +557,13 @@ public class BaseFrame extends javax.swing.JFrame {
         {
             e.printStackTrace();
         }
-
-        board.repaint();
-        PopulationText.setText(String.valueOf(board.getPopulation()));
     }
 
     private void nextGenCannon()
     {
         int nThreads =  Runtime.getRuntime().availableProcessors(),
         frameCannon = board.getCannonNumber() / nThreads;
+        board.resetPopulation();
 
         if(frameCannon == 0)
             nThreads = board.getCannonNumber();
@@ -604,8 +618,29 @@ public class BaseFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-        board.repaint();
-        PopulationText.setText(String.valueOf(board.getPopulation()));
+        start = 0;
+        end = frame;
+        tpe = (ThreadPoolExecutor) Executors.newFixedThreadPool(nThreads);
+
+        for (int i = 0; i < nThreads; ++i) 
+        {
+            tpe.execute(new countCells(board, start, end));
+            start = end;
+            end += frame;
+        }
+
+        tpe.execute(new countCells(board, start, board.getLength()));
+
+        tpe.shutdown();
+
+        try 
+        {
+            if (!tpe.awaitTermination(10, TimeUnit.SECONDS))
+                tpe.shutdownNow();
+        } catch (InterruptedException e) 
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -676,4 +711,5 @@ public class BaseFrame extends javax.swing.JFrame {
     private chessBoard board;
     private ReentrantLock lock;
     private Condition unpaused;
+    private DensityGraph density;
 }

@@ -33,16 +33,16 @@ public class NextGenRandom_Island implements Runnable
 
         if(neightborCondition)
         {
-            if(board.board[x-1][y] == 1)
+            if(x - 1 >= 0 && board.board[x-1][y] == 1)
                 alive++;
 
-            if(board.board[x+1][y] == 1)
+            if(x + 1 < board.getLength() && board.board[x+1][y] == 1)
                 alive++;
 
-            if(board.board[x][y-1] == 1)
+            if(y - 1 >= 0 && board.board[x][y-1] == 1)
                 alive++;
 
-            if(board.board[x][y+1] == 1)
+            if(y + 1 < board.getLength() && board.board[x][y+1] == 1)
                 alive++;
         }
         else
