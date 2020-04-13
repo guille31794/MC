@@ -22,7 +22,7 @@ public class countCells implements Runnable
     {
         for (int i = start; i < end; ++i)
             for (int j = 0; j < board.getLength(); ++j)
-                if (board.board[i][j] == 1)
+                if (board.board[i][j] == 1 || board.board[i][j] == 2)
                     board.incrementPopulation();
     }
 }
