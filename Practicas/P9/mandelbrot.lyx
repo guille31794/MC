@@ -87,6 +87,230 @@ Guillermo Girón García
 15 - 05 - 2020
 \end_layout
 
+\begin_layout Section*
+Análisis del conjunto de Mandelbrot
+\end_layout
+
+\begin_layout Standard
+Comenzando el análisis del conjunto de Mandelbrot, debemos comentar que
+ hablar de este conjunto, implica tener contacto con los números complejos,
+ los cuáles se suelen repsentar de la forma: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+c=a+bi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Donde a reprensenta la parte real, y bi, la imaginaria.
+ Pues bien, estos números, al igual que el conjunto sobre el que tratamos
+ se representan en un espacio bidimensional con dos ejes, x e y.
+\end_layout
+
+\begin_layout Standard
+Pues bien, el conjunto de Mandelbrot se genera mediante iteraciones sucesivas,
+ de un número complejo arbitrario, las cúales tengan su valor acotado en
+ un número máximo de iteraciones 
+\begin_inset Formula $N$
+\end_inset
+
+
+\begin_inset Formula $\epsilon\mathbb{N^{+}}$
+\end_inset
+
+, esto es, que sean estables.
+\end_layout
+
+\begin_layout Standard
+Dado que estamos estudiando un conjunto, podemos definir una función recursiva,
+ mediante composición de predicados, la cúal nos permita conocer si un determina
+do número pertenece o no al conjunto de Mandelbrot.
+ Establecemos entonces dicha función:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f(x)=\begin{cases}
+z_{0}=0 & \epsilon\mathbb{C}\\
+z_{n+1}=z_{n}^{2}+c
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Sobre el conjunto de Mandelbrot, podemos decir que representa una función
+ que tiende a ser convergente para todos los elementos del conjunto y divergente
+ hacia el infinito, cuando no.
+ Esto se ve reprensetado en su versión original del algoritmo, la cuál,
+ únicamente cuenta con dos colores, negro si pertenece al conjunto, blanco
+ en otro caso.
+\end_layout
+
+\begin_layout Standard
+\SpecialChar allowbreak
+
+\end_layout
+
+\begin_layout Standard
+Podemos establecer algunas de las propiedades de este conjunto:
+\end_layout
+
+\begin_layout Itemize
+Es compacto, es decir, contiene sucesiones convergentes.
+\end_layout
+
+\begin_layout Itemize
+Es conexo, esto es, no se puede particionar.
+\end_layout
+
+\begin_layout Itemize
+Su frontera tiene dimensión topológica 1, pero dimensión de Hausdorff 2.
+\end_layout
+
+\begin_layout Standard
+Iteración compleja: 
+\begin_inset Formula $z_{n+1}=z_{n}^{2}+c$
+\end_inset
+
+ con orbita estable y periódica.
+\end_layout
+
+\begin_layout Standard
+También se presenta un pequeño algoritmo para computar el conjunto de Mandelbrot
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+for each pixel (Px, Py) on the screen do     
+\end_layout
+
+\begin_layout Plain Layout
+
+x0 = scaled x coordinate of pixel (scaled to lie in the Mandelbrot X scale
+ (-2.5, 1))     
+\end_layout
+
+\begin_layout Plain Layout
+
+y0 = scaled y coordinate of pixel (scaled to lie in the Mandelbrot Y scale
+ (-1, 1))     
+\end_layout
+
+\begin_layout Plain Layout
+
+x := 0.0     
+\end_layout
+
+\begin_layout Plain Layout
+
+y := 0.0     
+\end_layout
+
+\begin_layout Plain Layout
+
+iteration := 0     
+\end_layout
+
+\begin_layout Plain Layout
+
+max_iteration := 1000     
+\end_layout
+
+\begin_layout Plain Layout
+
+while (x*x + y*y <= 2*2 AND iteration < max_iteration) do         
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtemp := x*x - y*y + x0         
+\end_layout
+
+\begin_layout Plain Layout
+
+	y := 2*x*y + y0         
+\end_layout
+
+\begin_layout Plain Layout
+
+	x := xtemp         
+\end_layout
+
+\begin_layout Plain Layout
+
+	iteration := iteration + 1       
+\end_layout
+
+\begin_layout Plain Layout
+
+color := palette[iteration]     
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(Px, Py, color)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\SpecialChar allowbreak
+
+\end_layout
+
+\begin_layout Standard
+Aspectos fractales de la iteración: 
+\begin_inset Formula $z\rightarrow$
+\end_inset
+
+
+\begin_inset Formula $\lambda z(1-z)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Dimensión fractal
+\end_layout
+
+\begin_layout Standard
+Es un ratio, que provee del índice de complejidad estadística, comparando
+ como cambian los detalles de un patrón con la escala en la que son medidos.
+ Es un número que no tiene porque ser entero.
+\end_layout
+
+\begin_layout Standard
+Se relaciona con la propia definición de fractal, que no es otra que la
+ de un objeto geométrico irregular, con infinidad de estructuras anidadas
+ de todas las escalas.
+\end_layout
+
+\begin_layout Section*
+Análisis empírico de la paralelización del algoritmo
+\end_layout
+
 \begin_layout Standard
 Las pruebas de ejecución del algoritmo se han realizado utilizando un ordenador
  equipado con un procesador AMD Ryzen 5 2600 de 12 núcleos lógicos, 24GB
@@ -281,6 +505,38 @@ SpeedUp
 </cell>
 </row>
 </lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\SpecialChar allowbreak
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename tareas_tiempo.png
+	lyxscale 60
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\SpecialChar allowbreak
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename tareas_speedup.png
+	lyxscale 60
+	scale 60
 
 \end_inset
 
